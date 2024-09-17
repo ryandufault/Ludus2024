@@ -9,6 +9,7 @@ class Accueil extends Phaser.Scene {
         this.load.image("creditsbtn", "./assets/images/credit.png");
         this.load.image("faqbtn", "./assets/images/faq.png");
         this.load.image("mutebtn", "./assets/images/audio.png");
+        this.load.spritesheet("introchar", "./assets/images/accueilperso.png", { frameWidth: 32, frameHeight: 32 });
     }
 
     create() {
@@ -21,7 +22,8 @@ class Accueil extends Phaser.Scene {
         this.bg = this.add.sprite(400, 300, 'bg').setScale(4).setDepth(1);
         this.bg.play('animate_bg');
 
-        this.add.image(275, 125, "logo").setDepth(2).setScale(1.4);
+        this.add.image(275, 125, "logo").setDepth(2).setScale(1.4).setAlpha(1);
+        this.add.image(275, 125, "logo").setDepth(1).setScale(1.5).setAlpha(0.3);
 
         let startBtn;
         startBtn = this.add.image(185, 250, "startbtn").setDepth(2).setScale(1);
@@ -29,12 +31,24 @@ class Accueil extends Phaser.Scene {
         startBtn.on("pointerdown", () => {
             this.scene.start("jeu");
         });
+        startBtn.on("pointerover", () => {
+            startBtn.setAlpha(1).setScale(1.04);
+        });
+        startBtn.on("pointerout", () => {
+            startBtn.setAlpha(1).setScale(1);
+        });
 
         let creditBtn;     
         creditBtn = this.add.image(185, 310, "creditsbtn").setDepth(2).setScale(1);
         creditBtn.setInteractive();
         creditBtn.on("pointerdown", () => {
             this.scene.start("credits");
+        });
+        creditBtn.on("pointerover", () => {
+            creditBtn.setAlpha(1).setScale(1.04);
+        });
+        creditBtn.on("pointerout", () => {
+            creditBtn.setAlpha(1).setScale(1);
         });
 
         
@@ -44,13 +58,59 @@ class Accueil extends Phaser.Scene {
         faqBtn.on("pointerdown", () => {
             this.scene.start("faq");
         });
+        faqBtn.on("pointerover", () => {
+            faqBtn.setAlpha(1).setScale(1.04);
+        });
+        faqBtn.on("pointerout", () => {
+            faqBtn.setAlpha(1).setScale(1);
+        });
 
         let muteBtn;
         muteBtn = this.add.image(110, 430, "mutebtn").setDepth(2).setScale(1);
         muteBtn.setInteractive();
         muteBtn.on("pointerdown", () => {
-
+            // Basculer l'état du bouton entre alpha 0.5 et alpha 1
+            if (muteBtn.alpha === 1) {
+                muteBtn.setAlpha(0.5).setScale(1);
+            } else {
+                muteBtn.setAlpha(1).setScale(1);
+            }
         });
+        
+        muteBtn.on("pointerover", () => {
+            if (muteBtn.scale === 1) {  // Change l'apparence seulement si le bouton n'est pas déjà muté
+                muteBtn.setScale(1.04);
+            } else {
+                muteBtn.setScale(1);
+            }
+        });
+        
+        muteBtn.on("pointerout", () => {
+            if (muteBtn.scale !== 1.04) {  // Réinitialiser l'apparence seulement si le bouton n'est pas déjà muté
+                muteBtn.setScale(1);
+            } else {
+                muteBtn.setScale(1.04);
+            }
+        });
+
+
+        this.anims.create({
+            key: 'animate_introchar',
+            frames: this.anims.generateFrameNumbers('introchar', { start: 0, end: 3 }),
+            frameRate: 3,
+            repeat: -1
+        });
+        this.bg = this.add.sprite(550, 320, 'introchar').setScale(8).setDepth(3).setAlpha(0.88);
+        this.bg.play('animate_introchar');
+
+        this.anims.create({
+            key: 'animate_introcharghost',
+            frames: this.anims.generateFrameNumbers('introchar', { start: 0, end: 3 }),
+            frameRate: 3,
+            repeat: -1
+        });
+        this.bg = this.add.sprite(550, 320, 'introchar').setScale(10).setDepth(3).setAlpha(0.2);
+        this.bg.play('animate_introcharghost');
     }
 
     update() {
