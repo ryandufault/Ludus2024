@@ -69,7 +69,6 @@ class Accueil extends Phaser.Scene {
         muteBtn = this.add.image(110, 430, "mutebtn").setDepth(2).setScale(1);
         muteBtn.setInteractive();
         muteBtn.on("pointerdown", () => {
-            // Basculer l'état du bouton entre alpha 0.5 et alpha 1
             if (muteBtn.alpha === 1) {
                 muteBtn.setAlpha(0.5).setScale(1);
             } else {
@@ -78,7 +77,7 @@ class Accueil extends Phaser.Scene {
         });
         
         muteBtn.on("pointerover", () => {
-            if (muteBtn.scale === 1) {  // Change l'apparence seulement si le bouton n'est pas déjà muté
+            if (muteBtn.scale === 1) {  
                 muteBtn.setScale(1.04);
             } else {
                 muteBtn.setScale(1);
@@ -86,7 +85,7 @@ class Accueil extends Phaser.Scene {
         });
         
         muteBtn.on("pointerout", () => {
-            if (muteBtn.scale !== 1.04) {  // Réinitialiser l'apparence seulement si le bouton n'est pas déjà muté
+            if (muteBtn.scale !== 1.04) { 
                 muteBtn.setScale(1);
             } else {
                 muteBtn.setScale(1.04);
