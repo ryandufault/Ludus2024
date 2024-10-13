@@ -51,6 +51,16 @@ class Jeu extends Phaser.Scene {
   }
 
   create() {
+    this.bgc0 = this.add.graphics();
+    this.bgc0.fillStyle(0x000000).setAlpha(1).setDepth(1000);
+    this.bgc0.fillRect(0, 0, config.width, config.height);
+    this.tweens.add({
+      targets: this.bgc0,
+      alpha: 0,
+      duration: 2000,
+      delay: 100,
+    });
+
     this.walkSpeed = 100;
     this.runSpeed = 165;
 
@@ -144,52 +154,67 @@ class Jeu extends Phaser.Scene {
     this.hudContainer.add(leaveBtn);
 
     this.player = this.physics.add
-      .sprite(550, 320, "walk")
-      .setScale(1.5)
+      .sprite(265, 530, "walk")
+      .setScale(2)
       .setDepth(10)
       .setAlpha(1);
     this.player.body.setSize(16, 16).setOffset(8, 16);
 
     //ghosts
     this.ghost = this.physics.add
-      .sprite(450, 320, "ghost")
-      .setScale(1.5)
+      .sprite(450, 420, "ghost")
+      .setScale(2)
       .setDepth(10)
       .setAlpha(1);
     this.ghost.body.setSize(16, 16).setOffset(8, 16);
     this.ghost.anims.play("ghost", true);
+    this.physics.add.overlap(this.player, this.ghost, () => {
+      this.scene.start("end");
+    });
 
     this.faceless = this.physics.add
-      .sprite(650, 320, "faceless")
-      .setScale(1.5)
+      .sprite(650, 420, "faceless")
+      .setScale(2)
       .setDepth(10)
       .setAlpha(1);
     this.faceless.body.setSize(16, 16).setOffset(8, 16);
     this.faceless.anims.play("faceless", true);
+    this.physics.add.overlap(this.player, this.faceless, () => {
+      this.scene.start("end");
+    });
 
     this.glitch = this.physics.add
-      .sprite(750, 320, "glitch")
-      .setScale(1.5)
+      .sprite(750, 420, "glitch")
+      .setScale(2)
       .setDepth(10)
       .setAlpha(1);
     this.glitch.body.setSize(16, 16).setOffset(8, 16);
     this.glitch.anims.play("glitch", true);
+    this.physics.add.overlap(this.player, this.glitch, () => {
+      this.scene.start("end");
+    });
 
     this.dark = this.physics.add
       .sprite(700, 420, "dark")
-      .setScale(1.5)
+      .setScale(2)
       .setDepth(10)
       .setAlpha(1);
     this.dark.body.setSize(16, 16).setOffset(8, 16);
     this.dark.anims.play("dark", true);
+    this.physics.add.overlap(this.player, this.dark, () => {
+      this.scene.start("end");
+    });
 
     this.headless = this.physics.add
-      .sprite(500, 420, "headless")
-      .setScale(1.5)
+      .sprite(600, 420, "headless")
+      .setScale(2)
       .setDepth(10)
       .setAlpha(1);
     this.headless.body.setSize(16, 16).setOffset(8, 16);
     this.headless.anims.play("headless", true);
+    this.physics.add.overlap(this.player, this.headless, () => {
+      this.scene.start("end");
+    });
 
     // Tilemap
     const maCarte = this.make.tilemap({ key: "carte1_json" });
@@ -200,17 +225,17 @@ class Jeu extends Phaser.Scene {
     // Calques
     const floorLayer = maCarte.createLayer("floor", [tileset], 0, 0);
     const wallsLayer = maCarte.createLayer("walls", [tileset], 0, 0);
-    const wallborderLayer = maCarte.createLayer("wallborders", [tileset], 0, 0);
+    const wallborderLayer = maCarte
+      .createLayer("wallborders", [tileset], 0, 0)
+      .setDepth(800);
     const objpascol = maCarte.createLayer("objpascol", [tileset], 0, 0);
     const objpascol2 = maCarte.createLayer("objpascol2", [tileset], 0, 0);
     const objcol = maCarte.createLayer("objcol", [tileset], 0, 0);
     // Si un calque contien des zones de collision (variable custom dans Tiled)
     wallsLayer.setCollisionByProperty({ collision: true });
-    wallborderLayer.setCollisionByProperty({ collision: true });
     objcol.setCollisionByProperty({ collision: true });
     // Par la suite on peut appliquer une collision avec le layer
     this.physics.add.collider(this.player, wallsLayer);
-    this.physics.add.collider(this.player, wallborderLayer);
     this.physics.add.collider(this.player, objcol);
 
     // Caméra
@@ -222,7 +247,55 @@ class Jeu extends Phaser.Scene {
     );
     this.cameras.main.setZoom(2);
     this.cameras.main.startFollow(this.player, true, 0.14, 0.16);
-    this.cameras.main.setDeadzone(100, 50);
+    this.cameras.main.setDeadzone(50, 20);
+
+    let timeline = this.add.timeline();
+    timeline.add({
+      at: 0,
+      tween: {
+        targets: this.ghost,
+        x: 467,
+        y: 275,
+        duration: 0,
+      },
+    });
+    timeline.add({
+      at: 600,
+      tween: {
+        targets: this.ghost,
+        x: 542,
+        y: 275,
+        duration: 0,
+      },
+    });
+    timeline.add({
+      at: 1200,
+      tween: {
+        targets: this.ghost,
+        x: 542,
+        y: 325,
+        duration: 0,
+      },
+    });
+    timeline.add({
+      at: 1800,
+      tween: {
+        targets: this.ghost,
+        x: 467,
+        y: 325,
+        duration: 0,
+      },
+    });
+    timeline.add({
+      at: 2400,
+      tween: {
+        targets: this.ghost,
+        x: 467,
+        y: 275,
+        duration: 0,
+      },
+    });
+    timeline.play().repeat();
   }
 
   update() {
@@ -232,6 +305,7 @@ class Jeu extends Phaser.Scene {
     }
 
     this.move(velocity);
+    this.wallborders();
   }
 
   move(velocity) {
@@ -259,5 +333,52 @@ class Jeu extends Phaser.Scene {
     ) {
       this.player.anims.play("idle", true);
     }
+  }
+
+  wallborders() {
+    //bordures (wallborders)
+
+    this.obstacle = this.add.rectangle(-4, 0, 10, 624).setOrigin(0, 0);
+    this.physics.add.existing(this.obstacle);
+    this.obstacle.body.setImmovable();
+    this.physics.add.collider(this.player, this.obstacle);
+
+    this.obstacle2 = this.add.rectangle(810, 0, 10, 624).setOrigin(0, 0);
+    this.physics.add.existing(this.obstacle2);
+    this.obstacle2.body.setImmovable();
+    this.physics.add.collider(this.player, this.obstacle2);
+
+    this.obstacle3 = this.add.rectangle(0, 616, 816, 10).setOrigin(0, 0);
+    this.physics.add.existing(this.obstacle3);
+    this.obstacle3.body.setImmovable();
+    this.physics.add.collider(this.player, this.obstacle3);
+
+    // wallbumpsetc
+
+    this.obstacle4 = this.add.rectangle(10, 100, 8, 34).setOrigin(0, 0);
+    this.physics.add.existing(this.obstacle4);
+    this.obstacle4.body.setImmovable();
+    this.physics.add.collider(this.player, this.obstacle4);
+
+    this.obstacle5 = this.add.rectangle(10, 190, 8, 184).setOrigin(0, 0);
+    this.physics.add.existing(this.obstacle5);
+    this.obstacle5.body.setImmovable();
+    this.physics.add.collider(this.player, this.obstacle5);
+
+    this.obstacle6 = this.add.rectangle(10, 478, 8, 87).setOrigin(0, 0);
+    this.physics.add.existing(this.obstacle6);
+    this.obstacle6.body.setImmovable();
+    this.physics.add.collider(this.player, this.obstacle6);
+
+
+    this.obstacle8 = this.add.rectangle(798, 190, 8, 234).setOrigin(0, 0);
+    this.physics.add.existing(this.obstacle8);
+    this.obstacle8.body.setImmovable();
+    this.physics.add.collider(this.player, this.obstacle8);
+
+    this.obstacle9 = this.add.rectangle(798, 440, 8, 74).setOrigin(0, 0);
+    this.physics.add.existing(this.obstacle9);
+    this.obstacle9.body.setImmovable();
+    this.physics.add.collider(this.player, this.obstacle9);
   }
 }

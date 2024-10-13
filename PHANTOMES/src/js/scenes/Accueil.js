@@ -19,6 +19,16 @@ class Accueil extends Phaser.Scene {
   }
 
   create() {
+    this.bgc0 = this.add.graphics();
+    this.bgc0.fillStyle(0x000000).setAlpha(1).setDepth(1000);
+    this.bgc0.fillRect(0, 0, config.width, config.height);
+    this.tweens.add({
+      targets: this.bgc0,
+      alpha: 0,
+      duration: 2000,
+      delay: 100,
+    });
+
     this.anims.create({
       key: "animate_bg",
       frames: this.anims.generateFrameNumbers("bg", { start: 0, end: 4 }),
@@ -57,11 +67,11 @@ class Accueil extends Phaser.Scene {
       creditBtn.setAlpha(1).setScale(1);
     });
 
-    let faqBtn; /// CHANGED POUR PARTIETERMINEE, REMETTRE A FAQ
+    let faqBtn;
     faqBtn = this.add.image(218, 370, "faqbtn").setDepth(2).setScale(1);
     faqBtn.setInteractive();
     faqBtn.on("pointerdown", () => {
-      this.scene.start("end");
+      this.scene.start("faq");
     });
     faqBtn.on("pointerover", () => {
       faqBtn.setAlpha(1).setScale(1.04);
