@@ -1,0 +1,15 @@
+- AJOUTER LES FANTÔMES DANS LES AUTRES MAPS
+- AJOUTER LES SUITES (genre tel porte mène a tel scène etc)
+- AJOUTER LA LAMPE TORCHE ET SON SYSTÈME (quand tu appuie sur "f" les fantômes flashent)
+- LES SHADERS, VIGNETTE ETC
+- LA FAQ 
+        simple juste le fond noise avec les textes
+- LES CREDITS
+        faire le joueur qui marche en boucle avec les textes qui apparait (peut être avec un systeme de wrap around et de caméra
+        zoomée)
+- VICTOIRE
+        pour victoire, le personnage se réveil dans sa chambre avec un message de fin, la chambre se déconstruit graduellement
+        pour aller vers une sorte de jardin (333) avec les fantômes et des morceaux de glitch et le bouton menu etc
+- LES "CLÉS"
+- GUI (MAP, POSSIBLEMENT POURCENTAGE DE BATTERIE)
+- EFFETS SONORES, MUSIQUES ETC

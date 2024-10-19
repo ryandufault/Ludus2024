@@ -108,8 +108,14 @@ class Jeu2 extends Phaser.Scene {
       this.worldHeight
     );
     this.cameras.main.setZoom(2);
-    this.cameras.main.startFollow(this.player, true, 0.12, 0.12);
+    this.cameras.main.startFollow(this.player, true, 0.14, 0.16);
     this.cameras.main.setDeadzone(50, 20);
+
+    // pour changer de scene
+
+    this.sceneZone = this.add.rectangle(796, 50, 40, 400).setOrigin(0, 0);
+    this.physics.add.existing(this.sceneZone);
+    this.sceneZone.body.setImmovable(true);
   }
 
   update() {
@@ -120,6 +126,10 @@ class Jeu2 extends Phaser.Scene {
 
     this.move(velocity);
     this.wallborders();
+
+    if (this.physics.overlap(this.player, this.sceneZone)) {
+      this.scene.start('jeu3');
+    }
   }
 
   move(velocity) {

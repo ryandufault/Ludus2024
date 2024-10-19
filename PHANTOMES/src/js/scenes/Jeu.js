@@ -1,6 +1,8 @@
 class Jeu extends Phaser.Scene {
   constructor() {
-    super({ key: "jeu" });
+    super({
+      key: "jeu"
+    });
   }
   preload() {
     this.load.spritesheet("ghost", "./assets/images/enemies/ghostsheet.png", {
@@ -20,8 +22,7 @@ class Jeu extends Phaser.Scene {
 
     this.load.spritesheet(
       "headless",
-      "./assets/images/enemies/headlesssheet.png",
-      {
+      "./assets/images/enemies/headlesssheet.png", {
         frameWidth: 32,
         frameHeight: 32,
       }
@@ -29,8 +30,7 @@ class Jeu extends Phaser.Scene {
 
     this.load.spritesheet(
       "faceless",
-      "./assets/images/enemies/facelesssheet.png",
-      {
+      "./assets/images/enemies/facelesssheet.png", {
         frameWidth: 32,
         frameHeight: 32,
       }
@@ -75,35 +75,50 @@ class Jeu extends Phaser.Scene {
     //anim player
     this.anims.create({
       key: "up",
-      frames: this.anims.generateFrameNumbers("walk", { start: 0, end: 3 }),
+      frames: this.anims.generateFrameNumbers("walk", {
+        start: 0,
+        end: 3
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     this.anims.create({
       key: "down",
-      frames: this.anims.generateFrameNumbers("walk", { start: 4, end: 7 }),
+      frames: this.anims.generateFrameNumbers("walk", {
+        start: 4,
+        end: 7
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     this.anims.create({
       key: "left",
-      frames: this.anims.generateFrameNumbers("walk", { start: 8, end: 11 }),
+      frames: this.anims.generateFrameNumbers("walk", {
+        start: 8,
+        end: 11
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     this.anims.create({
       key: "right",
-      frames: this.anims.generateFrameNumbers("walk", { start: 12, end: 15 }),
+      frames: this.anims.generateFrameNumbers("walk", {
+        start: 12,
+        end: 15
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     this.anims.create({
       key: "idle",
-      frames: this.anims.generateFrameNumbers("idle", { start: 5, end: 9 }),
+      frames: this.anims.generateFrameNumbers("idle", {
+        start: 5,
+        end: 9
+      }),
       frameRate: 5,
       repeat: -1,
     });
@@ -111,35 +126,50 @@ class Jeu extends Phaser.Scene {
     //animghosts
     this.anims.create({
       key: "ghost",
-      frames: this.anims.generateFrameNumbers("ghost", { start: 0, end: 4 }),
+      frames: this.anims.generateFrameNumbers("ghost", {
+        start: 0,
+        end: 4
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     this.anims.create({
       key: "faceless",
-      frames: this.anims.generateFrameNumbers("faceless", { start: 0, end: 4 }),
+      frames: this.anims.generateFrameNumbers("faceless", {
+        start: 0,
+        end: 4
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     this.anims.create({
       key: "glitch",
-      frames: this.anims.generateFrameNumbers("glitch", { start: 0, end: 4 }),
+      frames: this.anims.generateFrameNumbers("glitch", {
+        start: 0,
+        end: 4
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     this.anims.create({
       key: "dark",
-      frames: this.anims.generateFrameNumbers("dark", { start: 0, end: 4 }),
+      frames: this.anims.generateFrameNumbers("dark", {
+        start: 0,
+        end: 4
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     this.anims.create({
       key: "headless",
-      frames: this.anims.generateFrameNumbers("headless", { start: 0, end: 4 }),
+      frames: this.anims.generateFrameNumbers("headless", {
+        start: 0,
+        end: 4
+      }),
       frameRate: 6,
       repeat: -1,
     });
@@ -217,7 +247,9 @@ class Jeu extends Phaser.Scene {
     });
 
     // Tilemap
-    const maCarte = this.make.tilemap({ key: "carte1_json" });
+    const maCarte = this.make.tilemap({
+      key: "carte1_json"
+    });
 
     // Tileset
     const tileset = maCarte.addTilesetImage("school", "school");
@@ -232,8 +264,12 @@ class Jeu extends Phaser.Scene {
     const objpascol2 = maCarte.createLayer("objpascol2", [tileset], 0, 0);
     const objcol = maCarte.createLayer("objcol", [tileset], 0, 0);
     // Si un calque contien des zones de collision (variable custom dans Tiled)
-    wallsLayer.setCollisionByProperty({ collision: true });
-    objcol.setCollisionByProperty({ collision: true });
+    wallsLayer.setCollisionByProperty({
+      collision: true
+    });
+    objcol.setCollisionByProperty({
+      collision: true
+    });
     // Par la suite on peut appliquer une collision avec le layer
     this.physics.add.collider(this.player, wallsLayer);
     this.physics.add.collider(this.player, objcol);
@@ -296,6 +332,12 @@ class Jeu extends Phaser.Scene {
       },
     });
     timeline.play().repeat();
+
+    // pour changer de scene
+
+    this.sceneZone = this.add.rectangle(746, 50, 40, 100);
+    this.physics.add.existing(this.sceneZone);
+    this.sceneZone.body.setImmovable(true);
   }
 
   update() {
@@ -306,6 +348,10 @@ class Jeu extends Phaser.Scene {
 
     this.move(velocity);
     this.wallborders();
+
+    if (this.physics.overlap(this.player, this.sceneZone)) {
+      this.scene.start('jeu2');
+    }
   }
 
   move(velocity) {

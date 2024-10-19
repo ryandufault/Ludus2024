@@ -1,16 +1,18 @@
 class Jeu3 extends Phaser.Scene {
   constructor() {
-    super({ key: "jeu3" });
+    super({
+      key: "jeu3"
+    });
   }
   preload() {
     this.load.spritesheet("walk", "./assets/images/walksheet.png", {
-        frameWidth: 32,
-        frameHeight: 32,
-      });
-      this.load.spritesheet("idle", "./assets/images/idlesheet.png", {
-        frameWidth: 32,
-        frameHeight: 32,
-      });
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+    this.load.spritesheet("idle", "./assets/images/idlesheet.png", {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
     this.load.tilemapTiledJSON("carte3_json", "./assets/maps/carte3.json");
     this.load.image("school", "./assets/maps/school.png");
   }
@@ -40,35 +42,50 @@ class Jeu3 extends Phaser.Scene {
     //anim player
     this.anims.create({
       key: "up",
-      frames: this.anims.generateFrameNumbers("walk", { start: 0, end: 3 }),
+      frames: this.anims.generateFrameNumbers("walk", {
+        start: 0,
+        end: 3
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     this.anims.create({
       key: "down",
-      frames: this.anims.generateFrameNumbers("walk", { start: 4, end: 7 }),
+      frames: this.anims.generateFrameNumbers("walk", {
+        start: 4,
+        end: 7
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     this.anims.create({
       key: "left",
-      frames: this.anims.generateFrameNumbers("walk", { start: 8, end: 11 }),
+      frames: this.anims.generateFrameNumbers("walk", {
+        start: 8,
+        end: 11
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     this.anims.create({
       key: "right",
-      frames: this.anims.generateFrameNumbers("walk", { start: 12, end: 15 }),
+      frames: this.anims.generateFrameNumbers("walk", {
+        start: 12,
+        end: 15
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     this.anims.create({
       key: "idle",
-      frames: this.anims.generateFrameNumbers("idle", { start: 5, end: 9 }),
+      frames: this.anims.generateFrameNumbers("idle", {
+        start: 5,
+        end: 9
+      }),
       frameRate: 5,
       repeat: -1,
     });
@@ -81,7 +98,9 @@ class Jeu3 extends Phaser.Scene {
     this.player.body.setSize(16, 16).setOffset(8, 16);
 
     // Tilemap
-    const maCarte = this.make.tilemap({ key: "carte3_json" });
+    const maCarte = this.make.tilemap({
+      key: "carte3_json"
+    });
 
     // Tileset
     const tileset = maCarte.addTilesetImage("school", "school");
@@ -94,8 +113,12 @@ class Jeu3 extends Phaser.Scene {
     const objcol = maCarte.createLayer("objcol", [tileset], 0, 0);
     const wallborderLayer = maCarte.createLayer("wallborders", [tileset], 0, 0).setDepth(800);
     // Si un calque contien des zones de collision (variable custom dans Tiled)
-    wallsLayer.setCollisionByProperty({ collision: true });
-    objcol.setCollisionByProperty({ collision: true });
+    wallsLayer.setCollisionByProperty({
+      collision: true
+    });
+    objcol.setCollisionByProperty({
+      collision: true
+    });
     // Par la suite on peut appliquer une collision avec le layer
     this.physics.add.collider(this.player, wallsLayer);
     this.physics.add.collider(this.player, objcol);
@@ -108,8 +131,14 @@ class Jeu3 extends Phaser.Scene {
       this.worldHeight
     );
     this.cameras.main.setZoom(2);
-    this.cameras.main.startFollow(this.player, true, 0.12, 0.12);
+    this.cameras.main.startFollow(this.player, true, 0.14, 0.16);
     this.cameras.main.setDeadzone(50, 20);
+
+    // pour changer de scene
+
+    this.sceneZone = this.add.rectangle(360, 100, 40, 100);
+    this.physics.add.existing(this.sceneZone);
+    this.sceneZone.body.setImmovable(true);
   }
 
   update() {
@@ -120,6 +149,10 @@ class Jeu3 extends Phaser.Scene {
 
     this.move(velocity);
     this.wallborders();
+
+    if (this.physics.overlap(this.player, this.sceneZone)) {
+      this.scene.start('jeu4');
+    }
   }
 
   move(velocity) {
