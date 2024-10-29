@@ -1,7 +1,7 @@
 class Jeu extends Phaser.Scene {
   constructor() {
     super({
-      key: "jeu"
+      key: "jeu",
     });
   }
   preload() {
@@ -37,6 +37,7 @@ class Jeu extends Phaser.Scene {
     );
 
     this.load.image("leavebtn", "./assets/images/quitter.png");
+    this.load.image("flashglow", "./assets/images/flashglow.png");
 
     this.load.spritesheet("walk", "./assets/images/walksheet.png", {
       frameWidth: 32,
@@ -71,13 +72,15 @@ class Jeu extends Phaser.Scene {
     this.shift = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.SHIFT
     );
+    this.keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+    this.keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
     //anim player
     this.anims.create({
       key: "up",
       frames: this.anims.generateFrameNumbers("walk", {
         start: 0,
-        end: 3
+        end: 3,
       }),
       frameRate: 6,
       repeat: -1,
@@ -87,7 +90,7 @@ class Jeu extends Phaser.Scene {
       key: "down",
       frames: this.anims.generateFrameNumbers("walk", {
         start: 4,
-        end: 7
+        end: 7,
       }),
       frameRate: 6,
       repeat: -1,
@@ -97,7 +100,7 @@ class Jeu extends Phaser.Scene {
       key: "left",
       frames: this.anims.generateFrameNumbers("walk", {
         start: 8,
-        end: 11
+        end: 11,
       }),
       frameRate: 6,
       repeat: -1,
@@ -107,7 +110,7 @@ class Jeu extends Phaser.Scene {
       key: "right",
       frames: this.anims.generateFrameNumbers("walk", {
         start: 12,
-        end: 15
+        end: 15,
       }),
       frameRate: 6,
       repeat: -1,
@@ -117,7 +120,7 @@ class Jeu extends Phaser.Scene {
       key: "idle",
       frames: this.anims.generateFrameNumbers("idle", {
         start: 5,
-        end: 9
+        end: 9,
       }),
       frameRate: 5,
       repeat: -1,
@@ -128,7 +131,7 @@ class Jeu extends Phaser.Scene {
       key: "ghost",
       frames: this.anims.generateFrameNumbers("ghost", {
         start: 0,
-        end: 4
+        end: 4,
       }),
       frameRate: 6,
       repeat: -1,
@@ -138,7 +141,7 @@ class Jeu extends Phaser.Scene {
       key: "faceless",
       frames: this.anims.generateFrameNumbers("faceless", {
         start: 0,
-        end: 4
+        end: 4,
       }),
       frameRate: 6,
       repeat: -1,
@@ -148,7 +151,7 @@ class Jeu extends Phaser.Scene {
       key: "glitch",
       frames: this.anims.generateFrameNumbers("glitch", {
         start: 0,
-        end: 4
+        end: 4,
       }),
       frameRate: 6,
       repeat: -1,
@@ -158,7 +161,7 @@ class Jeu extends Phaser.Scene {
       key: "dark",
       frames: this.anims.generateFrameNumbers("dark", {
         start: 0,
-        end: 4
+        end: 4,
       }),
       frameRate: 6,
       repeat: -1,
@@ -168,7 +171,7 @@ class Jeu extends Phaser.Scene {
       key: "headless",
       frames: this.anims.generateFrameNumbers("headless", {
         start: 0,
-        end: 4
+        end: 4,
       }),
       frameRate: 6,
       repeat: -1,
@@ -195,60 +198,60 @@ class Jeu extends Phaser.Scene {
       .sprite(450, 420, "ghost")
       .setScale(2)
       .setDepth(10)
-      .setAlpha(1);
+      .setAlpha(0);
     this.ghost.body.setSize(16, 16).setOffset(8, 16);
     this.ghost.anims.play("ghost", true);
     this.physics.add.overlap(this.player, this.ghost, () => {
       this.scene.start("end");
     });
 
-    this.faceless = this.physics.add
-      .sprite(650, 420, "faceless")
+    this.ghost2 = this.physics.add
+      .sprite(140, 220, "ghost")
       .setScale(2)
       .setDepth(10)
-      .setAlpha(1);
-    this.faceless.body.setSize(16, 16).setOffset(8, 16);
-    this.faceless.anims.play("faceless", true);
-    this.physics.add.overlap(this.player, this.faceless, () => {
-      this.scene.start("end");
-    });
-
-    this.glitch = this.physics.add
-      .sprite(750, 420, "glitch")
-      .setScale(2)
-      .setDepth(10)
-      .setAlpha(1);
-    this.glitch.body.setSize(16, 16).setOffset(8, 16);
-    this.glitch.anims.play("glitch", true);
-    this.physics.add.overlap(this.player, this.glitch, () => {
-      this.scene.start("end");
-    });
-
-    this.dark = this.physics.add
-      .sprite(700, 420, "dark")
-      .setScale(2)
-      .setDepth(10)
-      .setAlpha(1);
-    this.dark.body.setSize(16, 16).setOffset(8, 16);
-    this.dark.anims.play("dark", true);
-    this.physics.add.overlap(this.player, this.dark, () => {
+      .setAlpha(0);
+    this.ghost2.body.setSize(16, 16).setOffset(8, 16);
+    this.ghost2.anims.play("ghost", true);
+    this.physics.add.overlap(this.player, this.ghost2, () => {
       this.scene.start("end");
     });
 
     this.headless = this.physics.add
-      .sprite(600, 420, "headless")
+      .sprite(738, 80, "headless")
       .setScale(2)
       .setDepth(10)
-      .setAlpha(1);
+      .setAlpha(0);
     this.headless.body.setSize(16, 16).setOffset(8, 16);
     this.headless.anims.play("headless", true);
     this.physics.add.overlap(this.player, this.headless, () => {
       this.scene.start("end");
     });
 
+    this.faceless = this.physics.add
+      .sprite(357, 320, "faceless")
+      .setScale(2)
+      .setDepth(10)
+      .setAlpha(0);
+    this.faceless.body.setSize(16, 16).setOffset(8, 16);
+    this.faceless.anims.play("faceless", true);
+    this.physics.add.overlap(this.player, this.faceless, () => {
+      this.scene.start("end");
+    });
+
+    this.faceless2 = this.physics.add
+      .sprite(407, 140, "faceless")
+      .setScale(2)
+      .setDepth(10)
+      .setAlpha(0);
+    this.faceless2.body.setSize(16, 16).setOffset(8, 16);
+    this.faceless2.anims.play("faceless", true);
+    this.physics.add.overlap(this.player, this.faceless2, () => {
+      this.scene.start("end");
+    });
+
     // Tilemap
     const maCarte = this.make.tilemap({
-      key: "carte1_json"
+      key: "carte1_json",
     });
 
     // Tileset
@@ -265,10 +268,10 @@ class Jeu extends Phaser.Scene {
     const objcol = maCarte.createLayer("objcol", [tileset], 0, 0);
     // Si un calque contien des zones de collision (variable custom dans Tiled)
     wallsLayer.setCollisionByProperty({
-      collision: true
+      collision: true,
     });
     objcol.setCollisionByProperty({
-      collision: true
+      collision: true,
     });
     // Par la suite on peut appliquer une collision avec le layer
     this.physics.add.collider(this.player, wallsLayer);
@@ -333,24 +336,93 @@ class Jeu extends Phaser.Scene {
     });
     timeline.play().repeat();
 
-    // pour changer de scene
+    let timelineg2 = this.add.timeline();
+    timelineg2.add({
+      at: 0,
+      tween: {
+        targets: this.headless,
+        x: 738,
+        duration: 0,
+      },
+    });
+    timelineg2.add({
+      at: 1000,
+      tween: {
+        targets: this.headless,
+        x: 680,
+        duration: 0,
+      },
+    });
+    timelineg2.add({
+      at: 2000,
+      tween: {
+        targets: this.headless,
+        x: 738,
+        duration: 0,
+      },
+    });
+    timelineg2.play().repeat();
+
+    // Scène overlap
 
     this.sceneZone = this.add.rectangle(746, 50, 40, 100);
     this.physics.add.existing(this.sceneZone);
     this.sceneZone.body.setImmovable(true);
+
+    this.wallborders();
+
+    // Flashlight system
+    this.flashlight = this.physics.add.group({
+      defaultKey: "flashglow",
+      maxSize: 1,
+    });
+    this.cooldown = false;
+
+
   }
 
   update() {
+    if (this.keyESC.isDown) { // Alternative pour le HUD
+      this.scene.start("accueil");
+    }
+
     let velocity = this.walkSpeed;
     if (this.shift.isDown) {
       velocity = this.runSpeed;
     }
 
     this.move(velocity);
-    this.wallborders();
 
     if (this.physics.overlap(this.player, this.sceneZone)) {
-      this.scene.start('jeu2');
+      this.scene.start("jeu2");
+    }
+
+    // Flashlight system
+    if (this.keyF.isDown && !this.cooldown) {
+      const openflashlight = this.flashlight.get(this.player.x, this.player.y);
+
+      if (openflashlight) {
+        openflashlight.setActive(true);
+        openflashlight.setVisible(true);
+        openflashlight.alpha = 1;
+        openflashlight.setScale(2.7);
+        this.apparitionFantomes();
+        this.tweens.add({
+          targets: openflashlight,
+          scale: 1,
+          alpha: 0,
+          duration: 1500,
+          onComplete: () => {
+            openflashlight.setActive(false);
+            openflashlight.setVisible(false);
+          },
+        });
+
+        this.cooldown = true;
+        this.time.delayedCall(4000, () => {
+          this.cooldown = false;
+        });
+      }
     }
   }
 
@@ -382,8 +454,7 @@ class Jeu extends Phaser.Scene {
   }
 
   wallborders() {
-    //bordures (wallborders)
-
+    //bordures
     this.obstacle = this.add.rectangle(-4, 0, 10, 624).setOrigin(0, 0);
     this.physics.add.existing(this.obstacle);
     this.obstacle.body.setImmovable();
@@ -400,7 +471,6 @@ class Jeu extends Phaser.Scene {
     this.physics.add.collider(this.player, this.obstacle3);
 
     // wallbumpsetc
-
     this.obstacle4 = this.add.rectangle(10, 100, 8, 34).setOrigin(0, 0);
     this.physics.add.existing(this.obstacle4);
     this.obstacle4.body.setImmovable();
@@ -416,7 +486,6 @@ class Jeu extends Phaser.Scene {
     this.obstacle6.body.setImmovable();
     this.physics.add.collider(this.player, this.obstacle6);
 
-
     this.obstacle8 = this.add.rectangle(798, 190, 8, 234).setOrigin(0, 0);
     this.physics.add.existing(this.obstacle8);
     this.obstacle8.body.setImmovable();
@@ -426,5 +495,90 @@ class Jeu extends Phaser.Scene {
     this.physics.add.existing(this.obstacle9);
     this.obstacle9.body.setImmovable();
     this.physics.add.collider(this.player, this.obstacle9);
+  }
+
+  apparitionFantomes() {
+    let timelineaf = this.add.timeline();
+    timelineaf.add({
+      at: 0,
+      tween: {
+        targets: [
+          this.ghost,
+          this.ghost2,
+          this.faceless2,
+          this.headless,
+          this.faceless,
+          this.dark,
+          this.glitch,
+        ],
+        alpha: 0,
+        duration: 0,
+      },
+    });
+    timelineaf.add({
+      at: 100,
+      tween: {
+        targets: [
+          this.ghost,
+          this.ghost2,
+          this.faceless2,
+          this.headless,
+          this.faceless,
+          this.dark,
+          this.glitch,
+        ],
+        alpha: 1,
+        duration: 0,
+      },
+    });
+    timelineaf.add({
+      at: 200,
+      tween: {
+        targets: [
+          this.ghost,
+          this.ghost2,
+          this.headless,
+          this.faceless2,
+          this.faceless,
+          this.dark,
+          this.glitch,
+        ],
+        alpha: 0,
+        duration: 0,
+      },
+    });
+    timelineaf.add({
+      at: 250,
+      tween: {
+        targets: [
+          this.ghost,
+          this.ghost2,
+          this.faceless2,
+          this.headless,
+          this.faceless,
+          this.dark,
+          this.glitch,
+        ],
+        alpha: 1,
+        duration: 0,
+      },
+    });
+    timelineaf.add({
+      at: 2400,
+      tween: {
+        targets: [
+          this.ghost,
+          this.ghost2,
+          this.faceless2,
+          this.headless,
+          this.faceless,
+          this.dark,
+          this.glitch,
+        ],
+        alpha: 0.01,
+        duration: 0,
+      },
+    });
+    timelineaf.play();
   }
 }

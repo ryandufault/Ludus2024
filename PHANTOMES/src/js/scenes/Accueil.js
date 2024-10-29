@@ -45,7 +45,7 @@ class Accueil extends Phaser.Scene {
     startBtn = this.add.image(185, 250, "startbtn").setDepth(2).setScale(1);
     startBtn.setInteractive();
     startBtn.on("pointerdown", () => {
-      this.scene.start("jeu");
+      this.scene.start("jeu3");
     });
     startBtn.on("pointerover", () => {
       startBtn.setAlpha(1).setScale(1.04);

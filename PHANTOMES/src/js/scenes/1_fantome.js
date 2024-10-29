@@ -31,45 +31,60 @@ this.load.spritesheet("faceless", "./assets/images/enemies/facelesssheet.png", {
 //animghosts
 this.anims.create({
   key: "ghost",
-  frames: this.anims.generateFrameNumbers("ghost", { start: 0, end: 4 }),
+  frames: this.anims.generateFrameNumbers("ghost", {
+    start: 0,
+    end: 4
+  }),
   frameRate: 6,
   repeat: -1,
 });
 
 this.anims.create({
   key: "faceless",
-  frames: this.anims.generateFrameNumbers("faceless", { start: 0, end: 4 }),
+  frames: this.anims.generateFrameNumbers("faceless", {
+    start: 0,
+    end: 4
+  }),
   frameRate: 6,
   repeat: -1,
 });
 
 this.anims.create({
   key: "glitch",
-  frames: this.anims.generateFrameNumbers("glitch", { start: 0, end: 4 }),
+  frames: this.anims.generateFrameNumbers("glitch", {
+    start: 0,
+    end: 4
+  }),
   frameRate: 6,
   repeat: -1,
 });
 
 this.anims.create({
   key: "dark",
-  frames: this.anims.generateFrameNumbers("dark", { start: 0, end: 4 }),
+  frames: this.anims.generateFrameNumbers("dark", {
+    start: 0,
+    end: 4
+  }),
   frameRate: 6,
   repeat: -1,
 });
 
 this.anims.create({
   key: "headless",
-  frames: this.anims.generateFrameNumbers("headless", { start: 0, end: 4 }),
+  frames: this.anims.generateFrameNumbers("headless", {
+    start: 0,
+    end: 4
+  }),
   frameRate: 6,
   repeat: -1,
 });
 
 //ghosts
 this.ghost = this.physics.add
-  .sprite(450, 320, "ghost")
+  .sprite(450, 420, "ghost")
   .setScale(2)
   .setDepth(10)
-  .setAlpha(1);
+  .setAlpha(0);
 this.ghost.body.setSize(16, 16).setOffset(8, 16);
 this.ghost.anims.play("ghost", true);
 this.physics.add.overlap(this.player, this.ghost, () => {
@@ -77,10 +92,10 @@ this.physics.add.overlap(this.player, this.ghost, () => {
 });
 
 this.faceless = this.physics.add
-  .sprite(650, 320, "faceless")
+  .sprite(650, 420, "faceless")
   .setScale(2)
   .setDepth(10)
-  .setAlpha(1);
+  .setAlpha(0);
 this.faceless.body.setSize(16, 16).setOffset(8, 16);
 this.faceless.anims.play("faceless", true);
 this.physics.add.overlap(this.player, this.faceless, () => {
@@ -88,10 +103,10 @@ this.physics.add.overlap(this.player, this.faceless, () => {
 });
 
 this.glitch = this.physics.add
-  .sprite(750, 320, "glitch")
+  .sprite(750, 420, "glitch")
   .setScale(2)
   .setDepth(10)
-  .setAlpha(1);
+  .setAlpha(0);
 this.glitch.body.setSize(16, 16).setOffset(8, 16);
 this.glitch.anims.play("glitch", true);
 this.physics.add.overlap(this.player, this.glitch, () => {
@@ -102,7 +117,7 @@ this.dark = this.physics.add
   .sprite(700, 420, "dark")
   .setScale(2)
   .setDepth(10)
-  .setAlpha(1);
+  .setAlpha(0);
 this.dark.body.setSize(16, 16).setOffset(8, 16);
 this.dark.anims.play("dark", true);
 this.physics.add.overlap(this.player, this.dark, () => {
@@ -110,10 +125,10 @@ this.physics.add.overlap(this.player, this.dark, () => {
 });
 
 this.headless = this.physics.add
-  .sprite(500, 420, "headless")
+  .sprite(600, 420, "headless")
   .setScale(2)
   .setDepth(10)
-  .setAlpha(1);
+  .setAlpha(0);
 this.headless.body.setSize(16, 16).setOffset(8, 16);
 this.headless.anims.play("headless", true);
 this.physics.add.overlap(this.player, this.headless, () => {

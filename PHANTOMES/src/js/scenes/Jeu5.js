@@ -1,7 +1,7 @@
 class Jeu5 extends Phaser.Scene {
   constructor() {
     super({
-      key: "jeu5"
+      key: "jeu5",
     });
   }
   preload() {
@@ -38,13 +38,15 @@ class Jeu5 extends Phaser.Scene {
     this.shift = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.SHIFT
     );
+    this.keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+    this.keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
     //anim player
     this.anims.create({
       key: "up",
       frames: this.anims.generateFrameNumbers("walk", {
         start: 0,
-        end: 3
+        end: 3,
       }),
       frameRate: 6,
       repeat: -1,
@@ -54,7 +56,7 @@ class Jeu5 extends Phaser.Scene {
       key: "down",
       frames: this.anims.generateFrameNumbers("walk", {
         start: 4,
-        end: 7
+        end: 7,
       }),
       frameRate: 6,
       repeat: -1,
@@ -64,7 +66,7 @@ class Jeu5 extends Phaser.Scene {
       key: "left",
       frames: this.anims.generateFrameNumbers("walk", {
         start: 8,
-        end: 11
+        end: 11,
       }),
       frameRate: 6,
       repeat: -1,
@@ -74,7 +76,7 @@ class Jeu5 extends Phaser.Scene {
       key: "right",
       frames: this.anims.generateFrameNumbers("walk", {
         start: 12,
-        end: 15
+        end: 15,
       }),
       frameRate: 6,
       repeat: -1,
@@ -84,7 +86,7 @@ class Jeu5 extends Phaser.Scene {
       key: "idle",
       frames: this.anims.generateFrameNumbers("idle", {
         start: 5,
-        end: 9
+        end: 9,
       }),
       frameRate: 5,
       repeat: -1,
@@ -99,7 +101,7 @@ class Jeu5 extends Phaser.Scene {
 
     // Tilemap
     const maCarte = this.make.tilemap({
-      key: "carte5_json"
+      key: "carte5_json",
     });
 
     // Tileset
@@ -111,13 +113,15 @@ class Jeu5 extends Phaser.Scene {
     const objpascol = maCarte.createLayer("objpascol", [tileset], 0, 0);
     const objcol2 = maCarte.createLayer("objcol2", [tileset], 0, 0);
     const objpascol2 = maCarte.createLayer("objpascol2", [tileset], 0, 0);
-    const wallborderLayer = maCarte.createLayer("wallborders", [tileset], 0, 0).setDepth(800);
+    const wallborderLayer = maCarte
+      .createLayer("wallborders", [tileset], 0, 0)
+      .setDepth(800);
     // Si un calque contien des zones de collision (variable custom dans Tiled)
     wallsLayer.setCollisionByProperty({
-      collision: true
+      collision: true,
     });
     objcol2.setCollisionByProperty({
-      collision: true
+      collision: true,
     });
     // Par la suite on peut appliquer une collision avec le layer
     this.physics.add.collider(this.player, wallsLayer);
@@ -134,25 +138,64 @@ class Jeu5 extends Phaser.Scene {
     this.cameras.main.startFollow(this.player, true, 0.14, 0.16);
     this.cameras.main.setDeadzone(50, 20);
 
-
     // pour changer de scene
 
     this.sceneZone = this.add.rectangle(30, 20, 145, 28);
     this.physics.add.existing(this.sceneZone);
     this.sceneZone.body.setImmovable(true);
+
+    this.wallborders();
+
+    // Flashlight system
+    this.flashlight = this.physics.add.group({
+      defaultKey: "flashglow",
+      maxSize: 1,
+    });
+    this.cooldown = false;
   }
 
   update() {
+    if (this.keyESC.isDown) { // Alternative pour le HUD
+      this.scene.start("accueil");
+    }
+
     let velocity = this.walkSpeed;
     if (this.shift.isDown) {
       velocity = this.runSpeed;
     }
 
     this.move(velocity);
-    this.wallborders();
 
     if (this.physics.overlap(this.player, this.sceneZone)) {
-      this.scene.start('jeu6');
+      this.scene.start("jeu6");
+    }
+
+    // Flashlight system
+    if (this.keyF.isDown && !this.cooldown) {
+      const openflashlight = this.flashlight.get(this.player.x, this.player.y);
+
+      if (openflashlight) {
+        openflashlight.setActive(true);
+        openflashlight.setVisible(true);
+        openflashlight.alpha = 1;
+        openflashlight.setScale(2.7);
+        this.apparitionFantomes();
+        this.tweens.add({
+          targets: openflashlight,
+          scale: 1,
+          alpha: 0,
+          duration: 1500,
+          onComplete: () => {
+            openflashlight.setActive(false);
+            openflashlight.setVisible(false);
+          },
+        });
+
+        this.cooldown = true;
+        this.time.delayedCall(4000, () => {
+          this.cooldown = false;
+        });
+      }
     }
   }
 
@@ -207,5 +250,80 @@ class Jeu5 extends Phaser.Scene {
     this.physics.add.existing(this.obstacle4);
     this.obstacle4.body.setImmovable();
     this.physics.add.collider(this.player, this.obstacle4);
+  }
+
+  apparitionFantomes() {
+    let timelineaf = this.add.timeline();
+    timelineaf.add({
+      at: 0,
+      tween: {
+        targets: [
+          this.ghost,
+          this.headless,
+          this.faceless,
+          this.dark,
+          this.glitch,
+        ],
+        alpha: 0,
+        duration: 0,
+      },
+    });
+    timelineaf.add({
+      at: 100,
+      tween: {
+        targets: [
+          this.ghost,
+          this.headless,
+          this.faceless,
+          this.dark,
+          this.glitch,
+        ],
+        alpha: 1,
+        duration: 0,
+      },
+    });
+    timelineaf.add({
+      at: 200,
+      tween: {
+        targets: [
+          this.ghost,
+          this.headless,
+          this.faceless,
+          this.dark,
+          this.glitch,
+        ],
+        alpha: 0,
+        duration: 0,
+      },
+    });
+    timelineaf.add({
+      at: 250,
+      tween: {
+        targets: [
+          this.ghost,
+          this.headless,
+          this.faceless,
+          this.dark,
+          this.glitch,
+        ],
+        alpha: 1,
+        duration: 0,
+      },
+    });
+    timelineaf.add({
+      at: 2400,
+      tween: {
+        targets: [
+          this.ghost,
+          this.headless,
+          this.faceless,
+          this.dark,
+          this.glitch,
+        ],
+        alpha: 0.01,
+        duration: 0,
+      },
+    });
+    timelineaf.play();
   }
 }
