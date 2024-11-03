@@ -16,9 +16,31 @@ class Accueil extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
+    this.load.audio("music", "./assets/audio/music.mp3");
+    this.load.audio("flash", "./assets/audio/flash.mp3");
+    this.load.audio("flashclic", "./assets/audio/flashclic.mp3");
+    this.load.audio("footstep", "./assets/audio/footstep.mp3");
+    this.load.audio("door", "./assets/audio/door.mp3");
+    this.load.audio("pianonote", "./assets/audio/pianonote.mp3");
+    this.load.audio("whitenoise", "./assets/audio/whitenoise.mp3");
+    this.load.audio("a1", "./assets/audio/ambient1.mp3");
+    this.load.audio("a2", "./assets/audio/ambient2.mp3");
+    this.load.audio("a3", "./assets/audio/ambient3.mp3");
+    this.load.audio("a4", "./assets/audio/ambient4.mp3");
   }
 
   create() {
+    this.bgMusic = this.sound.add("music", {
+      mute: false,
+      volume: 0.4,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: true,
+      delay: 0,
+    });
+    this.bgMusic.play();
+
     this.bgc0 = this.add.graphics();
     this.bgc0.fillStyle(0x000000).setAlpha(1).setDepth(1000);
     this.bgc0.fillRect(0, 0, config.width, config.height);
@@ -45,7 +67,7 @@ class Accueil extends Phaser.Scene {
     startBtn = this.add.image(185, 250, "startbtn").setDepth(2).setScale(1);
     startBtn.setInteractive();
     startBtn.on("pointerdown", () => {
-      this.scene.start("jeu3");
+      this.scene.start("jeu");
     });
     startBtn.on("pointerover", () => {
       startBtn.setAlpha(1).setScale(1.04);
@@ -84,10 +106,12 @@ class Accueil extends Phaser.Scene {
     muteBtn = this.add.image(110, 430, "mutebtn").setDepth(2).setScale(1);
     muteBtn.setInteractive();
     muteBtn.on("pointerdown", () => {
-      if (muteBtn.alpha === 1) {
+      if (muteBtn.alpha === 1 && this.bgMusic.isPlaying) {
         muteBtn.setAlpha(0.5).setScale(1);
+        this.bgMusic.pause();
       } else {
         muteBtn.setAlpha(1).setScale(1);
+        this.bgMusic.resume();
       }
     });
 

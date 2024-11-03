@@ -16,11 +16,15 @@ class Victoire extends Phaser.Scene {
     });
     this.load.tilemapTiledJSON("win_json", "./assets/maps/win.json");
     this.load.image("school", "./assets/maps/school.png");
+    this.load.image("winmsg", "./assets/images/thankyou.webp");
+    this.load.image("menuwin", "./assets/images/menuwin.webp");
+
+    this.load.image("plant1", "https://assets.codepen.io/9367036/plant1.png");
   }
 
   create() {
     this.bgc0 = this.add.graphics();
-    this.bgc0.fillStyle(0xffffff).setAlpha(1).setDepth(1000);
+    this.bgc0.fillStyle(0xffffff).setAlpha(1).setDepth(1010);
     this.bgc0.fillRect(0, 0, 10000, 10000);
     this.tweens.add({
       targets: this.bgc0,
@@ -39,57 +43,9 @@ class Victoire extends Phaser.Scene {
     this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-
-    //anim player
-    this.anims.create({
-      key: "up",
-      frames: this.anims.generateFrameNumbers("walk", {
-        start: 0,
-        end: 3,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "down",
-      frames: this.anims.generateFrameNumbers("walk", {
-        start: 4,
-        end: 7,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "left",
-      frames: this.anims.generateFrameNumbers("walk", {
-        start: 8,
-        end: 11,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "right",
-      frames: this.anims.generateFrameNumbers("walk", {
-        start: 12,
-        end: 15,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "idle",
-      frames: this.anims.generateFrameNumbers("idle", {
-        start: 5,
-        end: 9,
-      }),
-      frameRate: 5,
-      repeat: -1,
-    });
+    this.keyESC = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.ESC
+    );
 
     this.player = this.physics.add
       .sprite(945, 628, "walk")
@@ -138,9 +94,63 @@ class Victoire extends Phaser.Scene {
     this.cameras.main.setDeadzone(50, 20);
 
     this.wallborders();
+
+    this.winmsg = this.add
+      .image(450, 320, "winmsg")
+      .setOrigin(0, 0)
+      .setAlpha(0)
+      .setScale(0.54);
+    this.menuwin = this.add
+      .image(800, 860, "menuwin")
+      .setAlpha(0)
+      .setScale(0.2);
+    this.tweens.add({
+      targets: this.winmsg,
+      y: 280,
+      alpha: 1,
+      duration: 1000,
+      delay: 500,
+      ease: "Quad.easeOut",
+    });
+    this.tweens.add({
+      targets: this.menuwin,
+      alpha: 1,
+      duration: 1500,
+      delay: 1000,
+    });
+    this.menuwin.setInteractive();
+    this.menuwin.on("pointerdown", () => {
+      this.scene.start("accueil");
+    });
+    this.menuwin.on("pointerover", () => {
+      this.menuwin.setScale(0.204);
+    });
+    this.menuwin.on("pointerout", () => {
+      this.menuwin.setScale(0.2);
+    });
+
+    this.feuille = this.physics.add.image(300, 400, "plant1").setDepth(1002);
+    this.feuille
+      .setVelocity(Phaser.Math.Between(100, 25))
+      .setCollideWorldBounds(false);
+    this.feuille2 = this.physics.add.image(500, 300, "plant1").setDepth(1002);
+    this.feuille2
+      .setVelocity(Phaser.Math.Between(75, 25))
+      .setCollideWorldBounds(false);
+    this.feuille3 = this.physics.add.image(700, 200, "plant1").setDepth(1002);
+    this.feuille3
+      .setVelocity(Phaser.Math.Between(50, 25))
+      .setCollideWorldBounds(false);
+
+    this.physics.world.setBounds(500, 500, 600, 400);
   }
 
   update() {
+    if (this.keyESC.isDown) {
+      // Alternative pour le HUD
+      this.scene.start("accueil");
+    }
+
     let velocity = this.walkSpeed;
 
     this.move(velocity);
@@ -148,6 +158,11 @@ class Victoire extends Phaser.Scene {
     if (this.physics.overlap(this.player, this.sceneZone)) {
       this.scene.start("victoire");
     }
+    this.wrapAround();
+  }
+
+  wrapAround() {
+    this.physics.world.wrap(this.feuille, 5);
   }
 
   move(velocity) {
@@ -180,57 +195,52 @@ class Victoire extends Phaser.Scene {
   wallborders() {
     //bordures (wallborders)
 
-    this.obstacle = this.add.rectangle(574, 420, 10, 550).setOrigin(0, 0); 
+    this.obstacle = this.add.rectangle(574, 420, 10, 450).setOrigin(0, 0);
     this.physics.add.existing(this.obstacle);
     this.obstacle.body.setImmovable();
     this.physics.add.collider(this.player, this.obstacle);
 
-    this.obstacle = this.add.rectangle(1000, 520, 10, 250).setOrigin(0, 0); 
+    this.obstacle = this.add.rectangle(1000, 520, 10, 250).setOrigin(0, 0);
     this.physics.add.existing(this.obstacle);
     this.obstacle.body.setImmovable();
     this.physics.add.collider(this.player, this.obstacle);
 
-    this.obstacle = this.add.rectangle(804, 768, 4200, 86).setOrigin(0, 0); 
+    this.obstacle = this.add.rectangle(804, 768, 300, 10).setOrigin(0, 0);
     this.physics.add.existing(this.obstacle);
     this.obstacle.body.setImmovable();
     this.physics.add.collider(this.player, this.obstacle);
 
-    this.obstacle = this.add.rectangle(574, 520, 400, 86).setOrigin(0, 0); 
+    this.obstacle = this.add.rectangle(574, 520, 400, 86).setOrigin(0, 0);
     this.physics.add.existing(this.obstacle);
     this.obstacle.body.setImmovable();
     this.physics.add.collider(this.player, this.obstacle);
 
-    this.obstacle = this.add.rectangle(776, 593, 63, 23).setOrigin(0, 0); 
+    this.obstacle = this.add.rectangle(776, 593, 63, 23).setOrigin(0, 0);
     this.physics.add.existing(this.obstacle);
     this.obstacle.body.setImmovable();
     this.physics.add.collider(this.player, this.obstacle);
 
-    this.obstacle = this.add.rectangle(726, 672, 83, 28).setOrigin(0, 0); 
+    this.obstacle = this.add.rectangle(726, 672, 83, 28).setOrigin(0, 0);
     this.physics.add.existing(this.obstacle);
     this.obstacle.body.setImmovable();
     this.physics.add.collider(this.player, this.obstacle);
 
-    this.obstacle = this.add.rectangle(586, 682, 23, 39).setOrigin(0, 0); 
+    this.obstacle = this.add.rectangle(586, 682, 23, 39).setOrigin(0, 0);
     this.physics.add.existing(this.obstacle);
     this.obstacle.body.setImmovable();
     this.physics.add.collider(this.player, this.obstacle);
 
-    this.obstacle = this.add.rectangle(639, 773, 19, 19).setOrigin(0, 0); 
+    this.obstacle = this.add.rectangle(639, 773, 19, 19).setOrigin(0, 0);
     this.physics.add.existing(this.obstacle);
     this.obstacle.body.setImmovable();
     this.physics.add.collider(this.player, this.obstacle);
 
-    this.obstacle = this.add.rectangle(578, 803, 89, 10).setOrigin(0, 0); 
+    this.obstacle = this.add.rectangle(578, 803, 289, 10).setOrigin(0, 0);
     this.physics.add.existing(this.obstacle);
     this.obstacle.body.setImmovable();
     this.physics.add.collider(this.player, this.obstacle);
 
-    this.obstacle = this.add.rectangle(728, 803, 60, 10).setOrigin(0, 0); 
-    this.physics.add.existing(this.obstacle);
-    this.obstacle.body.setImmovable();
-    this.physics.add.collider(this.player, this.obstacle);
-
-    this.obstacle = this.add.rectangle(578, 953, 819, 10).setOrigin(0, 0); 
+    this.obstacle = this.add.rectangle(578, 953, 819, 10).setOrigin(0, 0);
     this.physics.add.existing(this.obstacle);
     this.obstacle.body.setImmovable();
     this.physics.add.collider(this.player, this.obstacle);

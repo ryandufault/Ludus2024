@@ -22,7 +22,8 @@ class Jeu extends Phaser.Scene {
 
     this.load.spritesheet(
       "headless",
-      "./assets/images/enemies/headlesssheet.png", {
+      "./assets/images/enemies/headlesssheet.png",
+      {
         frameWidth: 32,
         frameHeight: 32,
       }
@@ -30,7 +31,8 @@ class Jeu extends Phaser.Scene {
 
     this.load.spritesheet(
       "faceless",
-      "./assets/images/enemies/facelesssheet.png", {
+      "./assets/images/enemies/facelesssheet.png",
+      {
         frameWidth: 32,
         frameHeight: 32,
       }
@@ -73,7 +75,9 @@ class Jeu extends Phaser.Scene {
       Phaser.Input.Keyboard.KeyCodes.SHIFT
     );
     this.keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
-    this.keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+    this.keyESC = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.ESC
+    );
 
     //anim player
     this.anims.create({
@@ -202,6 +206,9 @@ class Jeu extends Phaser.Scene {
     this.ghost.body.setSize(16, 16).setOffset(8, 16);
     this.ghost.anims.play("ghost", true);
     this.physics.add.overlap(this.player, this.ghost, () => {
+      this.wn.stop();
+      this.footstep.stop();
+
       this.scene.start("end");
     });
 
@@ -213,6 +220,9 @@ class Jeu extends Phaser.Scene {
     this.ghost2.body.setSize(16, 16).setOffset(8, 16);
     this.ghost2.anims.play("ghost", true);
     this.physics.add.overlap(this.player, this.ghost2, () => {
+      this.wn.stop();
+      this.footstep.stop();
+
       this.scene.start("end");
     });
 
@@ -224,6 +234,9 @@ class Jeu extends Phaser.Scene {
     this.headless.body.setSize(16, 16).setOffset(8, 16);
     this.headless.anims.play("headless", true);
     this.physics.add.overlap(this.player, this.headless, () => {
+      this.wn.stop();
+      this.footstep.stop();
+
       this.scene.start("end");
     });
 
@@ -235,6 +248,8 @@ class Jeu extends Phaser.Scene {
     this.faceless.body.setSize(16, 16).setOffset(8, 16);
     this.faceless.anims.play("faceless", true);
     this.physics.add.overlap(this.player, this.faceless, () => {
+      this.wn.stop();
+      this.footstep.stop();
       this.scene.start("end");
     });
 
@@ -246,6 +261,9 @@ class Jeu extends Phaser.Scene {
     this.faceless2.body.setSize(16, 16).setOffset(8, 16);
     this.faceless2.anims.play("faceless", true);
     this.physics.add.overlap(this.player, this.faceless2, () => {
+      this.wn.stop();
+      this.footstep.stop();
+
       this.scene.start("end");
     });
 
@@ -378,50 +396,72 @@ class Jeu extends Phaser.Scene {
     });
     this.cooldown = false;
 
+    this.audio();
+    this.canPlaySound = true;
 
+    this.maxvol = 0.4;
+    this.minvol = 0.0;
+    this.wn.play();
+
+    this.time.delayedCall(10000, () => {
+      this.a1.play();
+    });
+    this.time.delayedCall(20300, () => {
+      this.a2.play();
+    });
   }
 
   update() {
-    if (this.keyESC.isDown) { // Alternative pour le HUD
+    if (this.keyESC.isDown) {
       this.scene.start("accueil");
     }
-
     let velocity = this.walkSpeed;
     if (this.shift.isDown) {
       velocity = this.runSpeed;
     }
-
     this.move(velocity);
-
     if (this.physics.overlap(this.player, this.sceneZone)) {
+      this.wn.stop();
+      this.footstep.stop();
       this.scene.start("jeu2");
     }
 
+    this.wndistance();
+
     // Flashlight system
-    if (this.keyF.isDown && !this.cooldown) {
-      const openflashlight = this.flashlight.get(this.player.x, this.player.y);
+    if (this.keyF.isDown) {
+      if (!this.cooldown) {
+        const openflashlight = this.flashlight.get(
+          this.player.x,
+          this.player.y
+        );
+        if (openflashlight) {
+          openflashlight.setActive(true);
+          openflashlight.setVisible(true);
+          openflashlight.alpha = 1;
+          openflashlight.setScale(2.7);
+          this.apparitionFantomes();
+          this.flashsfx.play();
+          this.pianonote.play();
+          this.tweens.add({
+            targets: openflashlight,
+            scale: 1,
+            alpha: 0,
+            duration: 1500,
+            onComplete: () => {
+              openflashlight.setActive(false);
+              openflashlight.setVisible(false);
+            },
+          });
+          this.cooldown = true;
+          this.time.delayedCall(4000, () => {
+            this.cooldown = false;
+          });
+        }
+      }
 
-      if (openflashlight) {
-        openflashlight.setActive(true);
-        openflashlight.setVisible(true);
-        openflashlight.alpha = 1;
-        openflashlight.setScale(2.7);
-        this.apparitionFantomes();
-        this.tweens.add({
-          targets: openflashlight,
-          scale: 1,
-          alpha: 0,
-          duration: 1500,
-          onComplete: () => {
-            openflashlight.setActive(false);
-            openflashlight.setVisible(false);
-          },
-        });
-
-        this.cooldown = true;
-        this.time.delayedCall(4000, () => {
-          this.cooldown = false;
-        });
+      if (!this.reload.isPlaying) {
+        this.reload.play();
       }
     }
   }
@@ -429,27 +469,37 @@ class Jeu extends Phaser.Scene {
   move(velocity) {
     this.player.setVelocity(0);
 
+    let isMoving = false;
+
     if (this.keyA.isDown) {
       this.player.setVelocityX(-velocity);
       this.player.play("left", true);
+      isMoving = true;
     } else if (this.keyD.isDown) {
       this.player.setVelocityX(velocity);
       this.player.play("right", true);
+      isMoving = true;
     }
 
     if (this.keyW.isDown) {
       this.player.setVelocityY(-velocity);
       this.player.play("up", true);
+      isMoving = true;
     } else if (this.keyS.isDown) {
       this.player.setVelocityY(velocity);
       this.player.play("down", true);
+      isMoving = true;
     }
 
-    if (
-      this.player.body.velocity.x === 0 &&
-      this.player.body.velocity.y === 0
-    ) {
+    if (!isMoving) {
       this.player.anims.play("idle", true);
+      if (this.footstep.isPlaying) {
+        this.footstep.stop();
+      }
+    } else {
+      if (!this.footstep.isPlaying) {
+        this.footstep.play();
+      }
     }
   }
 
@@ -580,5 +630,136 @@ class Jeu extends Phaser.Scene {
       },
     });
     timelineaf.play();
+  }
+
+  audio() {
+    this.flashsfx = this.sound.add("flash", {
+      mute: false,
+      volume: 0.9, // 0 (muet) et 1 (volume maximum)
+      rate: 1, // Change la vitesse de lecture. 1 est la vitesse normale
+      detune: 600, // Change la fréquence (ex : -1200 pour une octave inférieure)
+      seek: 0, // Position de démarrage en secondes
+      loop: false,
+      delay: 0, // Temps en secondes avant de lancer le son après play()
+    });
+
+    this.reload = this.sound.add("flashclic", {
+      mute: false,
+      volume: 0.4,
+      rate: 1,
+      detune: 400,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+
+    this.footstep = this.sound.add("footstep", {
+      mute: false,
+      volume: 0.2,
+      rate: 1,
+      detune: 300,
+      seek: 1,
+      loop: false,
+      delay: 0,
+    });
+
+    this.door = this.sound.add("door", {
+      mute: false,
+      volume: 0.8,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+
+    this.pianonote = this.sound.add("pianonote", {
+      mute: false,
+      volume: 0.8,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+
+    this.wn = this.sound.add("whitenoise", {
+      mute: false,
+      volume: 0.8,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+
+    this.a4 = this.sound.add("a4", {
+      mute: false,
+      volume: 0.8,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+    this.a3 = this.sound.add("a3", {
+      mute: false,
+      volume: 0.8,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+    this.a2 = this.sound.add("a2", {
+      mute: false,
+      volume: 0.8,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+    this.a1 = this.sound.add("a1", {
+      mute: false,
+      volume: 0.8,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+  }
+
+  wndistance() {
+    const ghosts = [
+      this.ghost,
+      this.ghost2,
+      this.faceless,
+      this.faceless2,
+      this.headless,
+    ];
+    let totalVolume = 0;
+    const maxDistance = 100;
+    const maxVol = 0.4;
+
+    ghosts.forEach((ghost) => {
+      const distance = Phaser.Math.Distance.Between(
+        this.player.x,
+        this.player.y,
+        ghost.x,
+        ghost.y
+      );
+      if (distance < maxDistance) {
+        const volume = Phaser.Math.Clamp(
+          maxVol - (distance / maxDistance) * maxVol,
+          0,
+          maxVol
+        );
+        totalVolume += volume;
+      }
+    });
+
+    this.wn.setVolume(totalVolume);
   }
 }

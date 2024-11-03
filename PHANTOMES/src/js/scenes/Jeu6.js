@@ -21,6 +21,9 @@ class Jeu6 extends Phaser.Scene {
   }
 
   create() {
+    this.time.delayedCall(1, () => {
+      this.door.play();
+    });
     this.bgc0 = this.add.graphics();
     this.bgc0.fillStyle(0x000000).setAlpha(1).setDepth(1000);
     this.bgc0.fillRect(0, 0, 10001, 10001);
@@ -42,58 +45,9 @@ class Jeu6 extends Phaser.Scene {
       Phaser.Input.Keyboard.KeyCodes.SHIFT
     );
     this.keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
-    this.keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
-
-    //anim player
-    this.anims.create({
-      key: "up",
-      frames: this.anims.generateFrameNumbers("walk", {
-        start: 0,
-        end: 3,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "down",
-      frames: this.anims.generateFrameNumbers("walk", {
-        start: 4,
-        end: 7,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "left",
-      frames: this.anims.generateFrameNumbers("walk", {
-        start: 8,
-        end: 11,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "right",
-      frames: this.anims.generateFrameNumbers("walk", {
-        start: 12,
-        end: 15,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "idle",
-      frames: this.anims.generateFrameNumbers("idle", {
-        start: 5,
-        end: 9,
-      }),
-      frameRate: 5,
-      repeat: -1,
-    });
+    this.keyESC = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.ESC
+    );
 
     this.player = this.physics.add
       .sprite(1250, 225, "walk")
@@ -155,10 +109,214 @@ class Jeu6 extends Phaser.Scene {
       maxSize: 1,
     });
     this.cooldown = false;
+
+    this.ghost = this.physics.add
+      .sprite(250, 120, "ghost")
+      .setScale(2)
+      .setDepth(10)
+      .setAlpha(0);
+    this.ghost.body.setSize(16, 16).setOffset(8, 16);
+    this.ghost.anims.play("ghost", true);
+    this.physics.add.overlap(this.player, this.ghost, () => {
+      this.scene.start("end6");
+      this.wn.stop();
+      this.footstep.stop();
+    });
+
+    this.ghost3 = this.physics.add
+      .sprite(280, 320, "ghost")
+      .setScale(2)
+      .setDepth(10)
+      .setAlpha(0);
+    this.ghost3.body.setSize(16, 16).setOffset(8, 16);
+    this.ghost3.anims.play("ghost", true);
+    this.physics.add.overlap(this.player, this.ghost3, () => {
+      this.scene.start("end6");
+      this.wn.stop();
+      this.footstep.stop();
+    });
+
+    this.faceless = this.physics.add
+      .sprite(420, 220, "faceless")
+      .setScale(2)
+      .setDepth(10)
+      .setAlpha(0);
+    this.faceless.body.setSize(16, 16).setOffset(8, 16);
+    this.faceless.anims.play("faceless", true);
+    this.physics.add.overlap(this.player, this.faceless, () => {
+      this.scene.start("end6");
+      this.wn.stop();
+      this.footstep.stop();
+    });
+
+    this.faceless2 = this.physics.add
+      .sprite(200, 290, "faceless")
+      .setScale(2)
+      .setDepth(10)
+      .setAlpha(0);
+    this.faceless2.body.setSize(16, 16).setOffset(8, 16);
+    this.faceless2.anims.play("faceless", true);
+    this.physics.add.overlap(this.player, this.faceless2, () => {
+      this.scene.start("end6");
+      this.wn.stop();
+      this.footstep.stop();
+    });
+
+    this.dark = this.physics.add
+      .sprite(690, 200, "dark")
+      .setScale(2)
+      .setDepth(10)
+      .setAlpha(0);
+    this.dark.body.setSize(16, 16).setOffset(8, 16);
+    this.dark.anims.play("dark", true);
+    this.physics.add.overlap(this.player, this.dark, () => {
+      this.scene.start("end6");
+      this.wn.stop();
+      this.footstep.stop();
+    });
+
+    this.glitch2 = this.physics.add
+      .sprite(790, 300, "glitch")
+      .setScale(2)
+      .setDepth(10)
+      .setAlpha(0);
+    this.glitch2.body.setSize(16, 16).setOffset(8, 16);
+    this.glitch2.anims.play("glitch", true);
+    this.physics.add.overlap(this.player, this.glitch2, () => {
+      this.scene.start("end6");
+      this.wn.stop();
+      this.footstep.stop();
+    });
+
+    let timelineg2 = this.add.timeline();
+    timelineg2.add({
+      at: 0,
+      tween: {
+        targets: this.glitch,
+        y: 290,
+        duration: 0,
+      },
+    });
+    timelineg2.add({
+      at: 1000,
+      tween: {
+        targets: this.glitch,
+        y: 240,
+        duration: 0,
+      },
+    });
+    timelineg2.add({
+      at: 2000,
+      tween: {
+        targets: this.glitch,
+        y: 290,
+        duration: 0,
+      },
+    });
+    timelineg2.play().repeat();
+
+    let timelinef = this.add.timeline();
+    timelinef.add({
+      at: 0,
+      tween: {
+        targets: this.faceless2,
+        y: 310,
+        duration: 0,
+      },
+    });
+    timelinef.add({
+      at: 2000,
+      tween: {
+        targets: this.faceless2,
+        y: 250,
+        duration: 0,
+      },
+    });
+    timelinef.add({
+      at: 4000,
+      tween: {
+        targets: this.faceless2,
+        y: 310,
+        duration: 0,
+      },
+    });
+    timelinef.play().repeat();
+
+    let timelinegg2 = this.add.timeline();
+    timelinegg2.add({
+      at: 0,
+      tween: {
+        targets: this.glitch2,
+        y: 300,
+        duration: 0,
+      },
+    });
+    timelinegg2.add({
+      at: 500,
+      tween: {
+        targets: this.glitch2,
+        y: 140,
+        duration: 0,
+      },
+    });
+    timelinegg2.add({
+      at: 1000,
+      tween: {
+        targets: this.glitch2,
+        y: 300,
+        duration: 0,
+      },
+    });
+    timelinegg2.play().repeat();
+
+    let timelineg3 = this.add.timeline();
+    timelineg3.add({
+      at: 0,
+      tween: {
+        targets: this.ghost3,
+        x: 292,
+        y: 320,
+        duration: 0,
+      },
+    });
+    timelineg3.add({
+      at: 1000,
+      tween: {
+        targets: this.ghost3,
+        x: 320,
+        y: 160,
+        duration: 0,
+      },
+    });
+    timelineg3.add({
+      at: 2000,
+      tween: {
+        targets: this.ghost3,
+        x: 292,
+        y: 320,
+        duration: 0,
+      },
+    });
+    timelineg3.play().repeat();
+
+    this.audio();
+    this.canPlaySound = true;
+
+    this.maxvol = 0.4;
+    this.minvol = 0.0;
+    this.wn.play();
+
+    this.time.delayedCall(10000, () => {
+      this.a3.play();
+    });
+    this.time.delayedCall(20300, () => {
+      this.a2.play();
+    });
   }
 
   update() {
-    if (this.keyESC.isDown) { // Alternative pour le HUD
+    if (this.keyESC.isDown) {
+      // Alternative pour le HUD
       this.scene.start("accueil");
     }
 
@@ -171,33 +329,46 @@ class Jeu6 extends Phaser.Scene {
 
     if (this.physics.overlap(this.player, this.sceneZone)) {
       this.scene.start("jeu7");
+      this.wn.stop();
+      this.footstep.stop();
     }
 
+    this.wndistance();
+
     // Flashlight system
-    if (this.keyF.isDown && !this.cooldown) {
-      const openflashlight = this.flashlight.get(this.player.x, this.player.y);
+    if (this.keyF.isDown) {
+      if (!this.cooldown) {
+        const openflashlight = this.flashlight.get(
+          this.player.x,
+          this.player.y
+        );
+        if (openflashlight) {
+          openflashlight.setActive(true);
+          openflashlight.setVisible(true);
+          openflashlight.alpha = 1;
+          openflashlight.setScale(2.7);
+          this.apparitionFantomes();
+          this.flashsfx.play();
+          this.pianonote.play();
+          this.tweens.add({
+            targets: openflashlight,
+            scale: 1,
+            alpha: 0,
+            duration: 1500,
+            onComplete: () => {
+              openflashlight.setActive(false);
+              openflashlight.setVisible(false);
+            },
+          });
+          this.cooldown = true;
+          this.time.delayedCall(4000, () => {
+            this.cooldown = false;
+          });
+        }
+      }
 
-      if (openflashlight) {
-        openflashlight.setActive(true);
-        openflashlight.setVisible(true);
-        openflashlight.alpha = 1;
-        openflashlight.setScale(2.7);
-        this.apparitionFantomes();
-        this.tweens.add({
-          targets: openflashlight,
-          scale: 1,
-          alpha: 0,
-          duration: 1500,
-          onComplete: () => {
-            openflashlight.setActive(false);
-            openflashlight.setVisible(false);
-          },
-        });
-
-        this.cooldown = true;
-        this.time.delayedCall(4000, () => {
-          this.cooldown = false;
-        });
+      if (!this.reload.isPlaying) {
+        this.reload.play();
       }
     }
   }
@@ -205,27 +376,37 @@ class Jeu6 extends Phaser.Scene {
   move(velocity) {
     this.player.setVelocity(0);
 
+    let isMoving = false;
+
     if (this.keyA.isDown) {
       this.player.setVelocityX(-velocity);
       this.player.play("left", true);
+      isMoving = true;
     } else if (this.keyD.isDown) {
       this.player.setVelocityX(velocity);
       this.player.play("right", true);
+      isMoving = true;
     }
 
     if (this.keyW.isDown) {
       this.player.setVelocityY(-velocity);
       this.player.play("up", true);
+      isMoving = true;
     } else if (this.keyS.isDown) {
       this.player.setVelocityY(velocity);
       this.player.play("down", true);
+      isMoving = true;
     }
 
-    if (
-      this.player.body.velocity.x === 0 &&
-      this.player.body.velocity.y === 0
-    ) {
+    if (!isMoving) {
       this.player.anims.play("idle", true);
+      if (this.footstep.isPlaying) {
+        this.footstep.stop();
+      }
+    } else {
+      if (!this.footstep.isPlaying) {
+        this.footstep.play();
+      }
     }
   }
 
@@ -281,10 +462,13 @@ class Jeu6 extends Phaser.Scene {
       tween: {
         targets: [
           this.ghost,
+          this.ghost3,
           this.headless,
           this.faceless,
+          this.faceless2,
           this.dark,
           this.glitch,
+          this.glitch2,
         ],
         alpha: 1,
         duration: 0,
@@ -295,10 +479,13 @@ class Jeu6 extends Phaser.Scene {
       tween: {
         targets: [
           this.ghost,
+          this.ghost3,
           this.headless,
           this.faceless,
+          this.faceless2,
           this.dark,
           this.glitch,
+          this.glitch2,
         ],
         alpha: 0,
         duration: 0,
@@ -309,10 +496,13 @@ class Jeu6 extends Phaser.Scene {
       tween: {
         targets: [
           this.ghost,
+          this.ghost3,
           this.headless,
           this.faceless,
+          this.faceless2,
           this.dark,
           this.glitch,
+          this.glitch2,
         ],
         alpha: 1,
         duration: 0,
@@ -323,15 +513,150 @@ class Jeu6 extends Phaser.Scene {
       tween: {
         targets: [
           this.ghost,
+          this.ghost3,
           this.headless,
           this.faceless,
+          this.faceless2,
           this.dark,
           this.glitch,
+          this.glitch2,
         ],
         alpha: 0.01,
         duration: 0,
       },
     });
     timelineaf.play();
+  }
+
+  audio() {
+    this.flashsfx = this.sound.add("flash", {
+      mute: false,
+      volume: 0.9, // 0 (muet) et 1 (volume maximum)
+      rate: 1, // Change la vitesse de lecture. 1 est la vitesse normale
+      detune: 600, // Change la fréquence (ex : -1200 pour une octave inférieure)
+      seek: 0, // Position de démarrage en secondes
+      loop: false,
+      delay: 0, // Temps en secondes avant de lancer le son après play()
+    });
+
+    this.reload = this.sound.add("flashclic", {
+      mute: false,
+      volume: 0.4,
+      rate: 1,
+      detune: 400,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+
+    this.footstep = this.sound.add("footstep", {
+      mute: false,
+      volume: 0.1,
+      rate: 1,
+      detune: 300,
+      seek: 1,
+      loop: true,
+      delay: 0,
+    });
+
+    this.door = this.sound.add("door", {
+      mute: false,
+      volume: 0.8,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+
+    this.pianonote = this.sound.add("pianonote", {
+      mute: false,
+      volume: 0.8,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+
+    this.wn = this.sound.add("whitenoise", {
+      mute: false,
+      volume: 0.8,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+
+    this.a4 = this.sound.add("a4", {
+      mute: false,
+      volume: 0.8,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+    this.a3 = this.sound.add("a3", {
+      mute: false,
+      volume: 0.8,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+    this.a2 = this.sound.add("a2", {
+      mute: false,
+      volume: 0.8,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+    this.a1 = this.sound.add("a1", {
+      mute: false,
+      volume: 0.8,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+  }
+
+  wndistance() {
+    const ghosts = [
+      this.ghost,
+      this.ghost3,
+      this.faceless,
+      this.faceless2,
+      this.dark,
+      this.glitch2,
+    ];
+    let totalVolume = 0;
+    const maxDistance = 100;
+    const maxVol = 0.4;
+
+    ghosts.forEach((ghost) => {
+      const distance = Phaser.Math.Distance.Between(
+        this.player.x,
+        this.player.y,
+        ghost.x,
+        ghost.y
+      );
+      if (distance < maxDistance) {
+        const volume = Phaser.Math.Clamp(
+          maxVol - (distance / maxDistance) * maxVol,
+          0,
+          maxVol
+        );
+        totalVolume += volume;
+      }
+    });
+
+    this.wn.setVolume(totalVolume);
   }
 }
