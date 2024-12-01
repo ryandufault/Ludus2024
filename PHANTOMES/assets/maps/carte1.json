@@ -123,8 +123,8 @@
          "y":0
         }, 
         {
-         "data":[0, 1071, 1071, 0, 0, 1072, 1072, 0, 0, 0, 0, 931, 931, 931, 0, 0, 0,
-            0, 1141, 1141, 0, 0, 1142, 1142, 0, 0, 0, 0, 1001, 1001, 1001, 837, 0, 0,
+         "data":[0, 1071, 1071, 0, 0, 1072, 1072, 704, 705, 706, 0, 931, 931, 931, 0, 0, 0,
+            0, 1141, 1141, 0, 0, 1142, 1142, 774, 775, 776, 0, 1001, 1001, 1001, 837, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 1219, 1220, 1221, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 1004, 512, 1004, 0, 1004, 0, 1004, 512, 1004, 0, 0, 0, 0,
@@ -147,8 +147,8 @@
          "y":0
         }, 
         {
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+         "data":[0, 0, 0, 0, 0, 0, 0, 704, 705, 706, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 774, 775, 776, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 1078, 0, 1078, 0, 1078, 0, 1078, 0, 1078, 0, 0, 0, 0,
@@ -3505,15 +3505,6 @@
                         }]
                 }, 
                 {
-                 "id":898,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
                  "id":899,
                  "properties":[
                         {
@@ -3742,15 +3733,6 @@
                 }, 
                 {
                  "id":967,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":968,
                  "properties":[
                         {
                          "name":"collision",
@@ -4157,61 +4139,6 @@
                         }]
                 }, 
                 {
-                 "id":1080,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":1081,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":1082,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":1083,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                },
-            
-                {
-                 "id":1084,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":1085,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
                  "id":1114,
                  "properties":[
                         {
@@ -4357,60 +4284,6 @@
                         }]
                 }, 
                 {
-                 "id":1150,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":1151,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":1152,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":1153,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":1154,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":1155,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
                  "id":1184,
                  "properties":[
                         {
@@ -4538,25 +4411,7 @@
                         }]
                 }, 
                 {
-                 "id":1218,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
                  "id":1219,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":1220,
                  "properties":[
                         {
                          "name":"collision",

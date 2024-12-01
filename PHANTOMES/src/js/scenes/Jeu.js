@@ -5,6 +5,10 @@ class Jeu extends Phaser.Scene {
     });
   }
   preload() {
+    this.load.image(
+      "texture",
+      "https://assets.codepen.io/9367036/puss-1647282152300.png"
+    );
     this.load.spritesheet("ghost", "./assets/images/enemies/ghostsheet.png", {
       frameWidth: 32,
       frameHeight: 32,
@@ -38,7 +42,6 @@ class Jeu extends Phaser.Scene {
       }
     );
 
-    this.load.image("leavebtn", "./assets/images/quitter.png");
     this.load.image("flashglow", "./assets/images/flashglow.png");
 
     this.load.spritesheet("walk", "./assets/images/walksheet.png", {
@@ -54,6 +57,8 @@ class Jeu extends Phaser.Scene {
   }
 
   create() {
+    this.scene.launch("hud");
+    this.flopen = null;
     this.bgc0 = this.add.graphics();
     this.bgc0.fillStyle(0x000000).setAlpha(1).setDepth(1000);
     this.bgc0.fillRect(0, 0, config.width, config.height);
@@ -63,6 +68,7 @@ class Jeu extends Phaser.Scene {
       duration: 2000,
       delay: 100,
     });
+    this.cameras.main.pan(700, 100, 1500);
 
     this.walkSpeed = 100;
     this.runSpeed = 165;
@@ -181,15 +187,6 @@ class Jeu extends Phaser.Scene {
       repeat: -1,
     });
 
-    // leavebtn (hud) (ne marche pas pour l'instant)
-    this.hudContainer = this.add.container(0, 0).setDepth(2220);
-    let leaveBtn = this.add.image(700, 580, "leavebtn").setScale(0.6);
-    leaveBtn.setInteractive();
-    leaveBtn.on("pointerdown", () => {
-      this.scene.start("accueil");
-    });
-    this.hudContainer.add(leaveBtn);
-
     this.player = this.physics.add
       .sprite(265, 530, "walk")
       .setScale(2)
@@ -208,7 +205,7 @@ class Jeu extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.ghost, () => {
       this.wn.stop();
       this.footstep.stop();
-
+      this.scene.stop("hud");
       this.scene.start("end");
     });
 
@@ -224,6 +221,7 @@ class Jeu extends Phaser.Scene {
       this.footstep.stop();
 
       this.scene.start("end");
+      this.scene.stop("hud");
     });
 
     this.headless = this.physics.add
@@ -238,6 +236,7 @@ class Jeu extends Phaser.Scene {
       this.footstep.stop();
 
       this.scene.start("end");
+      this.scene.stop("hud");
     });
 
     this.faceless = this.physics.add
@@ -251,6 +250,7 @@ class Jeu extends Phaser.Scene {
       this.wn.stop();
       this.footstep.stop();
       this.scene.start("end");
+      this.scene.stop("hud");
     });
 
     this.faceless2 = this.physics.add
@@ -263,7 +263,7 @@ class Jeu extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.faceless2, () => {
       this.wn.stop();
       this.footstep.stop();
-
+      this.scene.stop("hud");
       this.scene.start("end");
     });
 
@@ -305,6 +305,8 @@ class Jeu extends Phaser.Scene {
     this.cameras.main.setZoom(2);
     this.cameras.main.startFollow(this.player, true, 0.14, 0.16);
     this.cameras.main.setDeadzone(50, 20);
+    this.cameras.main.postFX.addVignette(0.5, 0.5, 0.9);
+    this.colorMatrixEffect = this.cameras.main.postFX.addColorMatrix();
 
     let timeline = this.add.timeline();
     timeline.add({
@@ -409,11 +411,39 @@ class Jeu extends Phaser.Scene {
     this.time.delayedCall(20300, () => {
       this.a2.play();
     });
+
+    let fx = [
+      this.ghost.postFX.addDisplacement("texture", -0.03, -0.03),
+      this.ghost2.postFX.addDisplacement("texture", -0.03, -0.03),
+      this.faceless.postFX.addDisplacement("texture", -0.03, -0.03),
+      this.faceless2.postFX.addDisplacement("texture", -0.03, -0.03),
+      this.headless.postFX.addDisplacement("texture", -0.03, -0.03),
+    ];
+    this.tweens.add({
+      targets: fx,
+      x: 0.03,
+      y: 0.03,
+      yoyo: true,
+      loop: -1,
+      duration: 2000,
+    });
+
+    this.emitter = this.add.particles(0, 0, "particleTexture", {
+      scale: 0.02,
+      alpha: { start: 1, end: 0 },
+      lifespan: 1000,
+      quantity: 6,
+      frequency: 99999,
+      speed: { min: 20, max: 100 },
+      blendMode: "ADD",
+      emitting: false,
+    });
   }
 
   update() {
     if (this.keyESC.isDown) {
       this.scene.start("accueil");
+      this.scene.stop("hud");
     }
     let velocity = this.walkSpeed;
     if (this.shift.isDown) {
@@ -430,6 +460,7 @@ class Jeu extends Phaser.Scene {
 
     // Flashlight system
     if (this.keyF.isDown) {
+      this.showFlopen();
       if (!this.cooldown) {
         const openflashlight = this.flashlight.get(
           this.player.x,
@@ -443,6 +474,7 @@ class Jeu extends Phaser.Scene {
           this.apparitionFantomes();
           this.flashsfx.play();
           this.pianonote.play();
+          this.cameras.main.flash(250, 255, 235, 210);
           this.tweens.add({
             targets: openflashlight,
             scale: 1,
@@ -545,6 +577,16 @@ class Jeu extends Phaser.Scene {
     this.physics.add.existing(this.obstacle9);
     this.obstacle9.body.setImmovable();
     this.physics.add.collider(this.player, this.obstacle9);
+
+    this.obstacle9 = this.add.rectangle(438, 503, 278, 39).setOrigin(0, 0);
+    this.physics.add.existing(this.obstacle9);
+    this.obstacle9.body.setImmovable();
+    this.physics.add.collider(this.player, this.obstacle9);
+
+    this.obstacle9 = this.add.rectangle(408, 467, 15, 56).setOrigin(0, 0);
+    this.physics.add.existing(this.obstacle9);
+    this.obstacle9.body.setImmovable();
+    this.physics.add.collider(this.player, this.obstacle9);
   }
 
   apparitionFantomes() {
@@ -635,12 +677,12 @@ class Jeu extends Phaser.Scene {
   audio() {
     this.flashsfx = this.sound.add("flash", {
       mute: false,
-      volume: 0.9, // 0 (muet) et 1 (volume maximum)
-      rate: 1, // Change la vitesse de lecture. 1 est la vitesse normale
-      detune: 600, // Change la fréquence (ex : -1200 pour une octave inférieure)
-      seek: 0, // Position de démarrage en secondes
+      volume: 0.9,
+      rate: 1,
+      detune: 600,
+      seek: 0,
       loop: false,
-      delay: 0, // Temps en secondes avant de lancer le son après play()
+      delay: 0,
     });
 
     this.reload = this.sound.add("flashclic", {
@@ -741,7 +783,7 @@ class Jeu extends Phaser.Scene {
     ];
     let totalVolume = 0;
     const maxDistance = 100;
-    const maxVol = 0.4;
+    const maxVol = 0.8;
 
     ghosts.forEach((ghost) => {
       const distance = Phaser.Math.Distance.Between(
@@ -761,5 +803,20 @@ class Jeu extends Phaser.Scene {
     });
 
     this.wn.setVolume(totalVolume);
+  }
+
+  showFlopen() {
+    if (!this.flopen) {
+      this.flopen = this.scene.get("hud").children.getByName("flopen");
+    }
+    if (this.flopen && this.flopen.alpha === 0) {
+      this.flopen.setAlpha(1);
+      this.tweens.add({
+        targets: this.flopen,
+        alpha: 0,
+        duration: 4000,
+        ease: "cubic.easeOut",
+      });
+    }
   }
 }

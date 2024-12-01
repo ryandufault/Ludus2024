@@ -9,6 +9,7 @@ class Accueil extends Phaser.Scene {
     });
     this.load.image("logo", "./assets/images/logo.png");
     this.load.image("startbtn", "./assets/images/commencer.png");
+    this.load.image("loadwin", "./assets/images/loadwin.png");
     this.load.image("creditsbtn", "./assets/images/credit.png");
     this.load.image("faqbtn", "./assets/images/faq.png");
     this.load.image("mutebtn", "./assets/images/audio.png");
@@ -27,19 +28,39 @@ class Accueil extends Phaser.Scene {
     this.load.audio("a2", "./assets/audio/ambient2.mp3");
     this.load.audio("a3", "./assets/audio/ambient3.mp3");
     this.load.audio("a4", "./assets/audio/ambient4.mp3");
+    this.load.audio("879hz", "./assets/audio/879hz.mp3");
+    this.load.audio("1080hz", "./assets/audio/1080hz.mp3");
+    this.load.audio("879hz2", "./assets/audio/879hz2.mp3");
+    this.load.audio("1080hz2", "./assets/audio/1080hz2.mp3");
+    this.load.image(
+      "particleTexture",
+      "https://assets.codepen.io/9367036/circle_05.png"
+    );
+
+    this.load.spritesheet(
+      "particlesTextureFlash",
+      "https://assets.codepen.io/9367036/kenneyaveccouleur.png",
+      {
+        frameWidth: 512,
+        frameHeight: 512,
+      }
+    );
   }
 
   create() {
-    this.bgMusic = this.sound.add("music", {
-      mute: false,
-      volume: 0.4,
-      rate: 1,
-      detune: 0,
-      seek: 0,
-      loop: true,
-      delay: 0,
-    });
-    this.bgMusic.play();
+    this.scene.stop("hud");
+    if (!this.bgMusic || !this.bgMusic.isPlaying) {
+      this.bgMusic = this.sound.add("music", {
+        mute: false,
+        volume: 0.2,
+        rate: 1,
+        detune: 0,
+        seek: 0,
+        loop: true,
+        delay: 0,
+      });
+      this.bgMusic.play();
+    }
 
     this.bgc0 = this.add.graphics();
     this.bgc0.fillStyle(0x000000).setAlpha(1).setDepth(1000);
@@ -74,6 +95,19 @@ class Accueil extends Phaser.Scene {
     });
     startBtn.on("pointerout", () => {
       startBtn.setAlpha(1).setScale(1);
+    });
+
+    let VictoryBtn;
+    VictoryBtn = this.add.image(675, 525, "loadwin").setDepth(2).setScale(0.5);
+    VictoryBtn.setInteractive();
+    VictoryBtn.on("pointerdown", () => {
+      this.verifWin();
+    });
+    VictoryBtn.on("pointerover", () => {
+      VictoryBtn.setAlpha(1).setScale(0.52);
+    });
+    VictoryBtn.on("pointerout", () => {
+      VictoryBtn.setAlpha(1).setScale(0.5);
     });
 
     let creditBtn;
@@ -165,4 +199,60 @@ class Accueil extends Phaser.Scene {
   }
 
   update() {}
+
+  verifWin() {
+    let savedState = localStorage.getItem("gameState");
+
+    if (savedState) {
+      let gameState = JSON.parse(savedState);
+      if (gameState.winAtteinte) {
+        console.log("win atteinte");
+        this.scene.start("victoire");
+      } else {
+        console.log("pas atteint win");
+        this.afficherMessage();
+      }
+    } else {
+      console.log("pas de save");
+      this.afficherMessage();
+    }
+  }
+
+  afficherMessage() {
+    let messageText = this.add
+      .text(200, 500, "Victoire non atteinte, atteigner la fin!", {
+        font: "64px VT323",
+        fill: "#ffffff",
+        align: "center",
+      })
+      .setScale(0.4)
+      .setAlpha(0)
+      .setDepth(4);
+
+    let messageText2 = this.add
+      .text(197, 500, "Victoire non atteinte, atteigner la fin!", {
+        font: "64px VT323",
+        fill: "#c4c4c4",
+        align: "center",
+      })
+      .setScale(0.407)
+      .setAlpha(0)
+      .setDepth(3);
+
+    this.tweens.add({
+      targets: [messageText2, messageText],
+      alpha: 1,
+      duration: 2000,
+      ease: "Power1",
+    });
+
+    this.time.delayedCall(2000, () => {
+      this.tweens.add({
+        targets: [messageText2, messageText],
+        alpha: 0,
+        duration: 2000,
+        ease: "Power1",
+      });
+    });
+  }
 }

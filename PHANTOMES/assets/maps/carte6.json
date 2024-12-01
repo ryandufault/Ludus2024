@@ -3950,15 +3950,6 @@
                  "id":655
                 }, 
                 {
-                 "id":656,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
                  "id":657,
                  "properties":[
                         {
@@ -4270,15 +4261,6 @@
                 }, 
                 {
                  "id":725
-                }, 
-                {
-                 "id":726,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
                 }, 
                 {
                  "id":727,
@@ -5177,16 +5159,7 @@
                 }, 
                 {
                  "id":894
-                }, 
-                {
-                 "id":898,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
+                },  
                 {
                  "id":899,
                  "properties":[
@@ -5553,15 +5526,6 @@
                 }, 
                 {
                  "id":964
-                }, 
-                {
-                 "id":968,
-                 "properties":[
-                        {
-                         "name":"collision",
-                         "type":"bool",
-                         "value":true
-                        }]
                 }, 
                 {
                  "id":969,

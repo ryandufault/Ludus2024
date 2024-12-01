@@ -14,17 +14,30 @@ class End2 extends Phaser.Scene {
   }
 
   create() {
-    /*this.anims.create({
-        key: "deathbg",
-        frames: this.anims.generateFrameNumbers("deathbg", { start: 0, end: 65 }),
-        frameRate: 10,
-        repeat: -1,
-      });
-    
-    this.bg = this.add
-    .sprite(0, 0, "deathbg").setOrigin(0, 0)
-    .setScale(8)
-    this.bg.anims.play("deathbg", true);*/
+    this.scene.stop("hud");
+    this.time.delayedCall(1, () => {
+      this.hz879.play();
+      this.hz1080.play();
+    });
+
+    this.hz879 = this.sound.add("879hz", {
+      mute: false,
+      volume: 0.4,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
+    this.hz1080 = this.sound.add("1080hz", {
+      mute: false,
+      volume: 0.5,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: false,
+      delay: 0,
+    });
 
     this.bgc0 = this.add.graphics();
     this.bgc0.fillStyle(0x000000).setAlpha(1).setDepth(999);
@@ -122,6 +135,21 @@ class End2 extends Phaser.Scene {
     menuBtn.on("pointerout", () => {
       menuBtn.setAlpha(1).setScale(1);
     });
+
+    this.emitter = this.add.particles(
+      config.width / 2,
+      config.height / 2,
+      "particleTexture",
+      {
+        scale: { start: 0.2, end: 0, ease: "Sine.easeInOut", random: true },
+        lifespan: 1000,
+        frequency: 5,
+        maxParticles: 20,
+        gravityY: 1000,
+        speed: { min: 100, max: 300 },
+        blendMode: "DIFFERENCE",
+      }
+    );
   }
   update() {}
 }

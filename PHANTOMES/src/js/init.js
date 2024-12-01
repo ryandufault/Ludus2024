@@ -22,6 +22,8 @@ const config = {
     End5,
     End6,
     End7,
+    EndDark,
+    HUD,
   ],
   transparent: false,
   pixelArt: true,
@@ -30,7 +32,7 @@ const config = {
   physics: {
     default: "arcade",
     arcade: {
-      debug: true,
+      debug: false,
     },
   },
 };

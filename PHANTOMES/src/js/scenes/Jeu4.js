@@ -22,6 +22,8 @@ class Jeu4 extends Phaser.Scene {
     this.time.delayedCall(1, () => {
       this.door.play();
     });
+    this.scene.launch("hud");
+    this.flopen = null;
     this.bgc0 = this.add.graphics();
     this.bgc0.fillStyle(0x000000).setAlpha(1).setDepth(1000);
     this.bgc0.fillRect(0, 0, config.width, config.height);
@@ -31,7 +33,7 @@ class Jeu4 extends Phaser.Scene {
       duration: 2000,
       delay: 100,
     });
-
+    this.cameras.main.pan(280, 210, 2000);
     this.walkSpeed = 100;
     this.runSpeed = 165;
 
@@ -97,6 +99,7 @@ class Jeu4 extends Phaser.Scene {
     this.cameras.main.setZoom(2);
     this.cameras.main.startFollow(this.player, true, 0.14, 0.16);
     this.cameras.main.setDeadzone(50, 20);
+    this.cameras.main.postFX.addVignette(0.5, 0.5, 0.7);
 
     // pour changer de scene
 
@@ -121,7 +124,8 @@ class Jeu4 extends Phaser.Scene {
     this.dark.body.setSize(16, 16).setOffset(8, 16);
     this.dark.anims.play("dark", true);
     this.physics.add.overlap(this.player, this.dark, () => {
-      this.scene.start("end4");
+      this.scene.start("enddark");
+      this.scene.stop("hud");
       this.wn.stop();
       this.footstep.stop();
     });
@@ -134,7 +138,8 @@ class Jeu4 extends Phaser.Scene {
     this.dark2.body.setSize(16, 16).setOffset(8, 16);
     this.dark2.anims.play("dark", true);
     this.physics.add.overlap(this.player, this.dark2, () => {
-      this.scene.start("end4");
+      this.scene.start("enddark");
+      this.scene.stop("hud");
       this.wn.stop();
       this.footstep.stop();
     });
@@ -202,12 +207,13 @@ class Jeu4 extends Phaser.Scene {
     this.headless.anims.play("headless", true);
     this.physics.add.overlap(this.player, this.headless, () => {
       this.scene.start("end4");
+      this.scene.stop("hud");
       this.wn.stop();
       this.footstep.stop();
     });
 
     this.headless2 = this.physics.add
-      .sprite(475, 300, "headless") //changer le X a 415 quand t'aura fini le système d'interrupteur
+      .sprite(475, 300, "headless")
       .setScale(2)
       .setDepth(10)
       .setAlpha(0);
@@ -215,6 +221,7 @@ class Jeu4 extends Phaser.Scene {
     this.headless2.anims.play("headless", true);
     this.physics.add.overlap(this.player, this.headless2, () => {
       this.scene.start("end4");
+      this.scene.stop("hud");
       this.wn.stop();
       this.footstep.stop();
     });
@@ -228,6 +235,7 @@ class Jeu4 extends Phaser.Scene {
     this.headless3.anims.play("headless", true);
     this.physics.add.overlap(this.player, this.headless3, () => {
       this.scene.start("end4");
+      this.scene.stop("hud");
       this.wn.stop();
       this.footstep.stop();
     });
@@ -245,12 +253,28 @@ class Jeu4 extends Phaser.Scene {
     this.time.delayedCall(20300, () => {
       this.a3.play();
     });
+
+    let fx = [
+      this.headless.postFX.addDisplacement("texture", -0.03, -0.03),
+      this.headless2.postFX.addDisplacement("texture", -0.03, -0.03),
+      this.headless3.postFX.addDisplacement("texture", -0.03, -0.03),
+      this.dark.postFX.addDisplacement("texture", -0.03, -0.03),
+      this.dark2.postFX.addDisplacement("texture", -0.03, -0.03),
+    ];
+    this.tweens.add({
+      targets: fx,
+      x: 0.03,
+      y: 0.03,
+      yoyo: true,
+      loop: -1,
+      duration: 2000,
+    });
   }
 
   update() {
     if (this.keyESC.isDown) {
-      // Alternative pour le HUD
       this.scene.start("accueil");
+      this.scene.stop("hud");
     }
 
     let velocity = this.walkSpeed;
@@ -272,6 +296,7 @@ class Jeu4 extends Phaser.Scene {
 
     // Flashlight system
     if (this.keyF.isDown) {
+      this.showFlopen();
       if (!this.cooldown) {
         const openflashlight = this.flashlight.get(
           this.player.x,
@@ -285,6 +310,7 @@ class Jeu4 extends Phaser.Scene {
           this.apparitionFantomes();
           this.flashsfx.play();
           this.pianonote.play();
+          this.cameras.main.flash(250, 245, 225, 190);
           this.tweens.add({
             targets: openflashlight,
             scale: 1,
@@ -484,12 +510,12 @@ class Jeu4 extends Phaser.Scene {
   audio() {
     this.flashsfx = this.sound.add("flash", {
       mute: false,
-      volume: 0.9, // 0 (muet) et 1 (volume maximum)
-      rate: 1, // Change la vitesse de lecture. 1 est la vitesse normale
-      detune: 600, // Change la fréquence (ex : -1200 pour une octave inférieure)
-      seek: 0, // Position de démarrage en secondes
+      volume: 0.9,
+      rate: 1,
+      detune: 600,
+      seek: 0,
       loop: false,
-      delay: 0, // Temps en secondes avant de lancer le son après play()
+      delay: 0,
     });
 
     this.reload = this.sound.add("flashclic", {
@@ -590,7 +616,7 @@ class Jeu4 extends Phaser.Scene {
     ];
     let totalVolume = 0;
     const maxDistance = 100;
-    const maxVol = 0.4;
+    const maxVol = 0.8;
 
     ghosts.forEach((ghost) => {
       const distance = Phaser.Math.Distance.Between(
@@ -610,5 +636,20 @@ class Jeu4 extends Phaser.Scene {
     });
 
     this.wn.setVolume(totalVolume);
+  }
+
+  showFlopen() {
+    if (!this.flopen) {
+      this.flopen = this.scene.get("hud").children.getByName("flopen");
+    }
+    if (this.flopen && this.flopen.alpha === 0) {
+      this.flopen.setAlpha(1);
+      this.tweens.add({
+        targets: this.flopen,
+        alpha: 0,
+        duration: 4000,
+        ease: "cubic.easeOut",
+      });
+    }
   }
 }

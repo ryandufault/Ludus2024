@@ -3,7 +3,6 @@ class Victoire extends Phaser.Scene {
     super({ key: "victoire" });
   }
 
-  // quand on souffle sur la bougie, ça nous ramène au menu
   preload() {
     this.load.image("menuBtn", "./assets/images/menu.png");
     this.load.spritesheet("walk", "./assets/images/walksheet.png", {
@@ -23,6 +22,7 @@ class Victoire extends Phaser.Scene {
   }
 
   create() {
+    this.scene.stop("hud");
     this.bgc0 = this.add.graphics();
     this.bgc0.fillStyle(0xffffff).setAlpha(1).setDepth(1010);
     this.bgc0.fillRect(0, 0, 10000, 10000);
@@ -32,6 +32,59 @@ class Victoire extends Phaser.Scene {
       duration: 4000,
       delay: 100,
     });
+
+    this.anims.create({
+      key: "up",
+      frames: this.anims.generateFrameNumbers("walk", {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "down",
+      frames: this.anims.generateFrameNumbers("walk", {
+        start: 4,
+        end: 7,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "left",
+      frames: this.anims.generateFrameNumbers("walk", {
+        start: 8,
+        end: 11,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "right",
+      frames: this.anims.generateFrameNumbers("walk", {
+        start: 12,
+        end: 15,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "idle",
+      frames: this.anims.generateFrameNumbers("idle", {
+        start: 5,
+        end: 9,
+      }),
+      frameRate: 5,
+      repeat: -1,
+    });
+
+    // Sauvegarde
+    this.sauvegarde();
 
     this.bgc1 = this.add.graphics();
     this.bgc1.fillStyle(0xffffff).setAlpha(1).setDepth(-1);
@@ -159,6 +212,14 @@ class Victoire extends Phaser.Scene {
       this.scene.start("victoire");
     }
     this.wrapAround();
+  }
+
+  sauvegarde() {
+    let gameState = {
+      winAtteinte: true,
+    };
+    localStorage.setItem("gameState", JSON.stringify(gameState));
+    console.log("Partie sauvegardée dans victoire");
   }
 
   wrapAround() {
